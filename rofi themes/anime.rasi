@@ -1,0 +1,115 @@
+* {
+  font:   "Iosevka Nerd Font Medium 14";  // Font büyütüldü
+
+  bg0     : #1a1b26;
+  bg1     : #1f2335;
+  bg2     : #24283b;
+  bg3     : #414868;
+  fg0     : #c0caf5;
+  fg1     : #a9b1d6;
+  fg2     : #737aa2;
+  red     : #f7768e;
+  green   : #9ece6a;
+  yellow  : #e0af68;
+  blue    : #7aa2f7;
+  magenta : #9a7ecc;
+  cyan    : #4abaaf;
+
+  accent: @red;
+  urgent: @yellow;
+
+  background-color : transparent;
+  text-color       : @fg0;
+
+  margin  : 0;
+  padding : 0;
+  spacing : 0;
+}
+
+element-icon, element-text, scrollbar {
+  cursor: pointer;
+}
+
+window {
+  location : center;  // Ortada açılacak şekilde ayarlandı
+  width    : 360px;    // Pencere genişliği büyütüldü
+  x-offset : 0px;
+  y-offset : 0px;
+
+  background-color: @bg1;
+  border: 2px;  // Border kalınlığı arttırıldı
+  border-color: @bg3;
+  border-radius: 6px;
+}
+
+inputbar {
+  spacing  : 10px;  // Genişlik arttırıldı
+  padding  : 8px 12px;
+  children : [ icon-search, entry ];
+
+  background-color: @bg0;
+}
+
+icon-search, entry, element-icon, element-text {
+  vertical-align: 0.5;
+}
+
+icon-search {
+  expand   : false;
+  filename : "search-symbolic";
+  size     : 18px;  // Arama simgesi boyutu arttırıldı
+}
+
+textbox {
+  padding          : 8px 12px;  // Daha büyük padding
+  background-color : @bg2;
+}
+
+listview {
+  padding      : 8px 0px;  // Liste elemanlarının padding'i arttırıldı
+  lines        : 15;       // Görünür satır sayısı arttırıldı
+  columns      : 1;
+  scrollbar    : true;
+  fixed-height : false;
+  dynamic      : true;
+}
+
+element {
+  padding : 8px 12px;  // Buton padding'i büyütüldü
+  spacing : 12px;      // Butonlar arasındaki boşluk arttırıldı
+}
+
+element normal urgent {
+  text-color: @urgent;
+}
+
+element normal active {
+  text-color: @accent;
+}
+
+element alternate active {
+  text-color: @accent;
+}
+
+element selected {
+  text-color       : @bg1;
+  background-color : @accent;
+}
+
+element selected urgent {
+  background-color: @urgent;
+}
+
+element-icon {
+  size: 1em;  // İkon boyutu arttırıldı
+}
+
+element-text {
+  text-color: inherit;
+}
+
+scrollbar {
+  handle-width : 6px;  // Scrollbar genişliği arttırıldı
+  handle-color : @fg2;
+  padding      : 0 6px;  // Scrollbar padding arttırıldı
+}
