@@ -19,14 +19,14 @@ yay -S anitr-cli
 
 Eğer Arch tabanlı olmayan bir dağıtım kullanıyorsanız projeyi doğrudan kaynağından derleyebilirsiniz.
 
-1. Repoyu klonlayın:
+1. **Repoyu klonlayın:**
 
 ```bash
 git clone https://github.com/xeyossr/anitr-cli.git
 cd anitr-cli
 ```
 
-2. Bağımlılıkları yükleyin:
+2. **Bağımlılıkları yükleyin:**
    AniTR-CLI'yi kullanabilmek için sisteminizde şu araçların yüklü olması gerekir:
 
 - `curl` ve `rofi` (veya Wayland kullanıyorsanız `rofi-wayland`),
@@ -48,7 +48,7 @@ sudo dnf install curl rofi gcc cmake make
 sudo zypper install curl rofi gcc cmake make
 ```
 
-3. Derleyin
+3. **Derleyin:**
 
 Bağımlılıkları kurduktan sonra, AniTR-CLI'yi derlemek için sırasıyla aşağıdaki komutları çalıştırabilirsiniz:
 
@@ -68,7 +68,7 @@ sudo cp build/anitr-cli /usr/bin/anitr-cli
 
 Anime izlemeye başlamak için terminalinize `anitr-cli` komutunu yazmanız yeterlidir. Ancak, ilk kez çalıştırdığınızda açılan rofi menüsü şu şekilde gözükecektir:
 
-![preview1](assets/preview1.png)
+![preview1](assets/preview-1.png)
 
 "Üstteki videoda menü daha şık görünüyordu, bende neden böyle?"
 Bu, rofi için gerekli ayarların yapılmamış olmasından kaynaklanıyor. Eğer rofi'yi daha modern ve şık bir temayla kullanmak istiyorsanız, aşağıdaki adımları takip edin:
