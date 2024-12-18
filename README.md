@@ -71,6 +71,7 @@ Anime izlemeye başlamak için terminalinize `anitr-cli` komutunu yazmanız yete
 ![preview1](assets/preview-1.png)
 
 "Üstteki videoda menü daha şık görünüyordu, bende neden böyle?"
+
 Bu, rofi için gerekli ayarların yapılmamış olmasından kaynaklanıyor. Eğer rofi'yi daha modern ve şık bir temayla kullanmak istiyorsanız, aşağıdaki adımları takip edin:
 
 1. **Config dosyasını oluşturun:**
