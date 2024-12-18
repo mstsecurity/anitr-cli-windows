@@ -1,10 +1,8 @@
 <div align="center">
   <h1>Önizleme</h1>
-  <video controls>
-      <source src="./assets/preview.mp4" type="video/mp4">
-      Your browser does not support the video tag.
-  </video>
 </div>
+
+[preview](https://github.com/user-attachments/assets/fef2191a-50e6-4c21-b2db-9c7043455af8)
 
 **aniTR-CLI:** Hızlı bir şekilde anime araması yapabileceğiniz ve istediğiniz animeyi Türkçe altyazılı izleyebileceğiniz terminal aracıdır 💫 Anime severler için hafif, pratik ve kullanışlı bir çözüm sunar 🚀
 
