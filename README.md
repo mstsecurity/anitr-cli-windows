@@ -29,23 +29,23 @@ cd anitr-cli
 2. **Bağımlılıkları yükleyin:**
    AniTR-CLI'yi kullanabilmek için sisteminizde şu araçların yüklü olması gerekir:
 
-- `curl` ve `rofi` (veya Wayland kullanıyorsanız `rofi-wayland`),
+- `curl`, `mpv` ve `rofi` (veya Wayland kullanıyorsanız `rofi-wayland`),
 - Derleme işlemleri için `gcc`, `cmake` ve `make`.
 
 Bu paketleri dağıtımınıza uygun bir şekilde aşağıdaki komutlarla yükleyebilirsiniz:
 
 ```bash
 # Arch:
-sudo pacman -S curl rofi gcc cmake make
+sudo pacman -S curl mpv rofi gcc cmake make
 
 # Debian/Ubuntu:
-sudo apt install curl rofi gcc cmake make
+sudo apt install curl mpv rofi gcc cmake make
 
 # Fedora/RHEL:
-sudo dnf install curl rofi gcc cmake make
+sudo dnf install curl mpv rofi gcc cmake make
 
 # OpenSUSE:
-sudo zypper install curl rofi gcc cmake make
+sudo zypper install curl mpv rofi gcc cmake make
 ```
 
 3. **Derleyin:**
