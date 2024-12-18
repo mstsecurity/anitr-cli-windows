@@ -23,6 +23,6 @@ build() {
 }
 
 package() {
-  cd "$srcdir/anitr-cli-$pkgver/build/dist"
-  install -Dm755 terminalwrap "$pkgdir/usr/bin/anitr-cli"
+  cd "$srcdir/anitr-cli-$pkgver/build"
+  install -Dm755 anitr-cli "$pkgdir/usr/bin/anitr-cli"
 }
