@@ -1,5 +1,5 @@
 * {
-  font:   "Iosevka Nerd Font Medium 14";  // Font büyütüldü
+  font:   "Iosevka Nerd Font Medium 14";
 
   bg0     : #1a1b26;
   bg1     : #1f2335;
@@ -31,19 +31,19 @@ element-icon, element-text, scrollbar {
 }
 
 window {
-  location : center;  // Ortada açılacak şekilde ayarlandı
-  width    : 360px;    // Pencere genişliği büyütüldü
+  location : center;
+  width    : 360px;
   x-offset : 0px;
   y-offset : 0px;
 
   background-color: @bg1;
-  border: 2px;  // Border kalınlığı arttırıldı
+  border: 2px;
   border-color: @bg3;
   border-radius: 6px;
 }
 
 inputbar {
-  spacing  : 10px;  // Genişlik arttırıldı
+  spacing  : 10px;
   padding  : 8px 12px;
   children : [ icon-search, entry ];
 
@@ -57,17 +57,17 @@ icon-search, entry, element-icon, element-text {
 icon-search {
   expand   : false;
   filename : "search-symbolic";
-  size     : 18px;  // Arama simgesi boyutu arttırıldı
+  size     : 18px;
 }
 
 textbox {
-  padding          : 8px 12px;  // Daha büyük padding
+  padding          : 8px 12px;
   background-color : @bg2;
 }
 
 listview {
-  padding      : 8px 0px;  // Liste elemanlarının padding'i arttırıldı
-  lines        : 15;       // Görünür satır sayısı arttırıldı
+  padding      : 8px 0px;
+  lines        : 15;
   columns      : 1;
   scrollbar    : true;
   fixed-height : false;
@@ -75,8 +75,8 @@ listview {
 }
 
 element {
-  padding : 8px 12px;  // Buton padding'i büyütüldü
-  spacing : 12px;      // Butonlar arasındaki boşluk arttırıldı
+  padding : 8px 12px;
+  spacing : 12px;
 }
 
 element normal urgent {
@@ -101,7 +101,7 @@ element selected urgent {
 }
 
 element-icon {
-  size: 1em;  // İkon boyutu arttırıldı
+  size: 1em;
 }
 
 element-text {
@@ -109,7 +109,7 @@ element-text {
 }
 
 scrollbar {
-  handle-width : 6px;  // Scrollbar genişliği arttırıldı
+  handle-width : 6px;
   handle-color : @fg2;
-  padding      : 0 6px;  // Scrollbar padding arttırıldı
+  padding      : 0 6px;
 }
