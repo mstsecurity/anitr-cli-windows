@@ -2,7 +2,7 @@
   <h1>Önizleme</h1>
 </div>
 
-[preview](https://github.com/user-attachments/assets/fef2191a-50e6-4c21-b2db-9c7043455af8)
+[preview.mp4](https://github.com/user-attachments/assets/38ea6b98-b586-43d0-b3f1-19615da4c378)
 
 **aniTR-CLI:** Hızlı bir şekilde anime araması yapabileceğiniz ve istediğiniz animeyi Türkçe altyazılı izleyebileceğiniz terminal aracıdır 💫 Anime severler için hafif, pratik ve kullanışlı bir çözüm sunar 🚀
 
@@ -71,6 +71,7 @@ Anime izlemeye başlamak için terminalinize `anitr-cli` komutunu yazmanız yete
 ![preview1](assets/preview-1.png)
 
 "Üstteki videoda menü daha şık görünüyordu, bende neden böyle?"
+
 Bu, rofi için gerekli ayarların yapılmamış olmasından kaynaklanıyor. Eğer rofi'yi daha modern ve şık bir temayla kullanmak istiyorsanız, aşağıdaki adımları takip edin:
 
 1. **Config dosyasını oluşturun:**
@@ -83,7 +84,7 @@ anitr-cli --gen-config
    Örnek olarak kullanılan [anime.rasi](https://raw.githubusercontent.com/xeyossr/anitr-cli/main/rofi%20themes/anime.rasi) temasını indirin ve `~/.config/rofi/anime.rasi` dizinine taşıyın:
 
 ```bash
-wget -O ~/.config/rofi/anime.rasi https://raw.githubusercontent.com/xeyossr/anitr-cli/main/rofi%20themes/anime.rasi
+curl -o ~/.config/rofi/anime.rasi https://raw.githubusercontent.com/xeyossr/anitr-cli/main/rofi%20themes/anime.rasi
 ```
 
 3. **`rofi-flags.conf` dosyasını düzenleyin:**
@@ -97,15 +98,9 @@ wget -O ~/.config/rofi/anime.rasi https://raw.githubusercontent.com/xeyossr/anit
 Bu adımları tamamladıktan sonra, AniTR-CLI artık daha modern ve şık bir görünümle çalışacaktır.
 Kendi temalarınızı da oluşturabilir, hatta bu temaları depoya katkı olarak gönderebilirsiniz. Böylece projemize destek olabilirsiniz!
 
-## ⚠️ Karşılaşabileceğiniz sorunlar
+## Sorunlar
 
 Eğer bir sorunla karşılaştıysanız ve aşağıdaki çözümler işe yaramıyorsa, lütfen bir [**issue**](https://github.com/xeyossr/anitr-cli/issue) açarak karşılaştığınız problemi detaylı bir şekilde açıklayın.
-
-### "Bölüm bulunamadı. Tekrar deneyin." hatası
-
-Eğer "Bölüm bulunamadı, tekrar deneyin" gibi bir hata alıyorsanız, muhtemelen bir anime filmi izlemeye çalışıyorsunuzdur. Şu an için AniTR-CLI yalnızca anime dizilerini desteklemektedir. Ancak üzülmeyin, bu özelliği en kısa zamanda eklemeyi planlıyoruz!
-
-Eğer bu özelliği kendiniz ekleyebileceğinize inanıyorsanız, lütfen bir [**pull request**](https://github.com/xeyossr/pulls) göndererek projeye katkıda bulunun. Desteğiniz, AniTR-CLI’yi daha iyi bir hale getirmemiz için çok değerli!
 
 ## Katkı
 
