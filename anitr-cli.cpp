@@ -14,7 +14,10 @@ FetchData fetchdata;
 std::vector<std::string> main_menu_options = {
 	"İzle", "Sonraki Bölüm", "Önceki Bölüm", "Bölüm Seç", "Anime Ara", "Çık"
 };
-        
+
+std::string movie_url;
+bool is_movie;
+
 // Yardım menüsü
 void printHelp() 
 {
@@ -138,7 +141,6 @@ std::vector<std::map<std::string, std::string>> queryLoop()
 
             if (query.find_first_of("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ") == std::string::npos) 
             {
-                std::cout << "Geçerli bir arama sorgusu giriniz!" << "\n";
                 continue;
             }
 
@@ -192,6 +194,7 @@ int main(int argc, char* argv[]) {
     {
         anime_names.push_back(item.at("name"));
     }
+
     anime_names.push_back("Çık");
 
     std::string selected_anime_name;
@@ -235,35 +238,30 @@ int main(int argc, char* argv[]) {
     anime_episodes = fetchdata.fetch_anime_episodes(selected_id);
 
     // Eğer animede herhangi bir bölüm bulunamadıysa
-    bool is_movie = anime_episodes.empty();
+    is_movie = anime_episodes.empty();
     
     // Eğer film seçildiyse
     if (is_movie) 
     {
-        std::string movie_url = fetchdata.fetch_anime_watch_api_url_movie(selected_id);
-        
-        if (!movie_url.empty()) 
-        {
-            std::string mpv_cmd = "mpv --fullscreen " + movie_url + " > /dev/null 2>&1";
-            std::cout << "İzleniyor: " << selected_anime_name << "\n";
-            system(mpv_cmd.c_str());
-        } 
-        
-        else 
-        {
-            std::cout << "Filmin URL'si bulunamadı." << "\n";
-        }
-        
-        return 0;
+        movie_url = fetchdata.fetch_anime_watch_api_url_movie(selected_id);
     }
 
     while (true) 
     {
 		// Ana menüye bölümü de ekle
-        main_menu_options = {
-			"İzle", "Sonraki Bölüm", "Önceki Bölüm", "Bölüm Seç", "Anime Ara", "Çık", anime_episodes[selected_episode_index].at("name")
-		};
-		
+        if (!is_movie)
+        {
+            main_menu_options = {
+			    "İzle", "Sonraki Bölüm", "Önceki Bölüm", "Bölüm Seç", "Anime Ara", "Çık", anime_episodes[selected_episode_index].at("name")
+		    };
+        }
+
+        else if (is_movie) {
+            main_menu_options = {
+                "İzle", "Anime Ara", "Çık"
+            };
+        }
+
         // Ana menüyü göster
         std::string main_menu_choice = getInputFromRofi("Ana Menü", main_menu_options);
 
@@ -325,13 +323,14 @@ int main(int argc, char* argv[]) {
             anime_episodes = fetchdata.fetch_anime_episodes(selected_id);
 
             // Eğer animede herhangi bir bölüm bulunamadıysa
-            bool is_movie = anime_episodes.empty();
+            is_movie = anime_episodes.empty();
 
             // Eğer film seçildiyse
             if (is_movie) 
             {
-                std::string movie_url = fetchdata.fetch_anime_watch_api_url_movie(selected_id);
+                movie_url = fetchdata.fetch_anime_watch_api_url_movie(selected_id);
 
+                /*
                 if (!movie_url.empty()) 
                 {
                     std::string mpv_cmd = "mpv --fullscreen " + movie_url + " > /dev/null 2>&1";
@@ -341,6 +340,7 @@ int main(int argc, char* argv[]) {
 
                 else 
                     std::cout << "Filmin URL'si bulunamadı." << "\n";
+                */
 
                 return 0;
             }
@@ -349,10 +349,8 @@ int main(int argc, char* argv[]) {
         // Eğer izle seçeneği seçildiyse
         else if (main_menu_choice == "İzle") 
         {
+
             // Eğer film seçilmediyse
-            // ! Buradaki if-else kontrolü, ilerideki güncellemede getirmeyi düşündüğüm bir özellikten kaynaklı
-            // ! Normal şartlarda eğer arattığınız anime dizi değil de film ise
-            // ! İzle, Sonraki Bölüm vb. gibi seçenekler gelmeden direkt olarak izlemeye başlarsınız
 
 			if (!is_movie) 
             {
@@ -362,41 +360,39 @@ int main(int argc, char* argv[]) {
             	// Bölüm URL'si ile izleme URL'sini al
             	std::vector<std::map<std::string, std::string>> watch_url = fetchdata.fetch_anime_watch_api_url(episode_url);
 
-            if (!watch_url.empty()) 
-            {
-                // URL'yi al
-                std::string video_url = watch_url.back().at("url");
+                if (!watch_url.empty()) 
+                {
+                    // URL'yi al
+                    std::string video_url = watch_url.back().at("url");
 
-                // MPV ile izleme başlat
-                std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
-                std::string mpv_cmd = "mpv --fullscreen " + video_url + " > /dev/null 2>&1";
-                system(mpv_cmd.c_str());
+                    // MPV ile izleme başlat
+                    std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
+                    std::string mpv_cmd = "mpv --fullscreen " + video_url + " > /dev/null 2>&1";
+                    system(mpv_cmd.c_str());
+                } 
+            
+                else 
+                {
+                    std::cerr << "İzleme URL'si alınamadı" << "\n";
+                }
+          
             } 
-            
-            else 
-            {
-                std::cerr << "İzleme URL'si alınamadı" << "\n";
-            }
           
-          } 
-          
-          else 
-          {
-          	std::string watch_url = fetchdata.fetch_anime_watch_api_url_movie(selected_id);
-          	
-            if (!watch_url.empty()) 
+            else if (is_movie)
             {
-          		// MPV ile izleme başlat
-          		std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
-          		std::string mpv_cmd = "mpv --fullscreen " + watch_url;
-          		system(mpv_cmd.c_str());
-          	} 
+                if (!movie_url.empty()) 
+                {
+          	    	// MPV ile izleme başlat
+          	    	std::cout << "İzleniyor: " << selected_anime_name << "\n";
+          	    	std::string mpv_cmd = "mpv --fullscreen " + movie_url + " > /dev/null 2>&1";
+          	    	system(mpv_cmd.c_str());
+          	    } 
             
-            else 
-            {
-          		std::cerr << "İzleme URL'si alınamadı" << "\n";
-          	}
-          }    
+                else 
+                {
+          	    	std::cerr << "İzleme URL'si alınamadı" << "\n";
+          	    }
+            }    
         
         } 
         
@@ -466,7 +462,7 @@ int main(int argc, char* argv[]) {
             }
 
             std::string selected_episode_title = getInputFromRofi("Bölüm Seç", episode_titles);
-            if (selected_episode_title == "<exit>" || selected_episode_title.empty()) break;
+            //if (selected_episode_title == "<exit>" || selected_episode_title.empty()) break;
 
             // Seçilen bölüm verisini bul
             for (int i = 0; i < anime_episodes.size(); i++) 
