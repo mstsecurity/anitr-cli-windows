@@ -7,7 +7,7 @@
 **aniTR-CLI:** Hızlı bir şekilde anime araması yapabileceğiniz ve istediğiniz animeyi Türkçe altyazılı izleyebileceğiniz terminal aracıdır 💫 Anime severler için hafif, pratik ve kullanışlı bir çözüm sunar 🚀
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/xeyossr/anitr-cli?style=for-the-badge)
-![AUR version](https://img.shields.io/aur/version/anitr-cli?style=for-the-badge)
+![AUR](https://img.shields.io/aur/version/anitr-cli?style=for-the-badge)
 
 ## 💻 Kurulum
 
@@ -17,7 +17,7 @@ Eğer Arch tabanlı bir dağıtım kullanıyorsanız, AUR üzerinden tek bir kom
 yay -S anitr-cli
 ```
 
-Eğer Arch tabanlı olmayan bir dağıtım kullanıyorsanız projeyi doğrudan kaynağından derleyebilirsiniz.
+Eğer Arch tabanlı olmayan bir dağıtım kullanıyorsanız projeyi kendiniz derleyebilirsiniz.
 
 1. **Repoyu klonlayın:**
 
