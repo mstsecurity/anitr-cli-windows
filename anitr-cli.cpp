@@ -275,6 +275,9 @@ int main(int argc, char* argv[]) {
         // Eğer anime ara seçeneği seçildiyse
         else if (main_menu_choice == "Anime Ara") 
         {
+	    // episode_index'i sıfırla
+	    selected_episode_index = 0;
+		
             // Anime Ara işlemini tekrar başlatıyoruz
             std::vector<std::map<std::string, std::string>> results = queryLoop();
 
