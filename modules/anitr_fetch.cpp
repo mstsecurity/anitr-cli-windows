@@ -142,7 +142,7 @@ std::vector<std::map<std::string, std::string>> FetchData::fetch_anime_search_da
 
 
 std::vector<int> FetchData::fetch_anime_seasons(const std::string& selected_id) {
-    std::string url = base_url + "secure/related-videos?episode=1&season=1&titleId=" + selected_id;
+    std::string url = base_url + "secure/related-videos?episode=1&season=1&titleId=" + selected_id + "&videoId=" + selected_id;
     json data = _get_json(url);
     std::vector<int> seasons;
 
@@ -167,7 +167,7 @@ std::vector<std::map<std::string, std::string>> FetchData::fetch_anime_episodes(
     std::set<std::string> seen_episode_names;
 
     for (int season_index : seasons) {
-        std::string url = base_url + "secure/related-videos?episode=1&season=" + std::to_string(season_index + 1) + "&titleId=" + selected_id;
+        std::string url = base_url + "secure/related-videos?episode=1&season=" + std::to_string(season_index + 1) + "&titleId=" + selected_id + "&videoId=" + selected_id;
         json data = _get_json(url);
         if (!data.empty() && data.contains("videos")) {
             for (const auto& item : data["videos"]) {
