@@ -437,7 +437,7 @@ int main(int argc, char* argv[]) {
                 std::vector<std::map<std::string, std::string>> watch_url = fetchdata.fetch_anime_watch_api_url(episode_url);
 
                 // URL'yi al
-                std::string video_url = watch_url.back().at("url");
+                std::string video_url = getHighestQualityUrl(watch_url);
 
                 // MPV ile izleme başlat
                 std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
@@ -464,7 +464,7 @@ int main(int argc, char* argv[]) {
                 std::vector<std::map<std::string, std::string>> watch_url = fetchdata.fetch_anime_watch_api_url(episode_url);
                 
                 // URL'yi al
-                std::string video_url = watch_url.back().at("url");
+                std::string video_url = getHighestQualityUrl(watch_url);
 
                 // MPV ile izleme başlat
                 std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
