@@ -244,6 +244,7 @@ std::vector<std::map<std::string, std::string>> FetchData::fetch_anime_watch_api
                     for (const auto& item : json_response["urls"]) {
                         std::map<std::string, std::string> urlData;
                         urlData["url"] = item.value("url", "No URL field");
+                        urlData["quality"] = item.value("label", "Unknown");
                         urls.push_back(urlData);
                     }
                 } catch (const nlohmann::json::parse_error& e) {

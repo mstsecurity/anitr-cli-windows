@@ -15,8 +15,33 @@ std::vector<std::string> main_menu_options = {
 	"İzle", "Sonraki Bölüm", "Önceki Bölüm", "Bölüm Seç", "Anime Ara", "Çık"
 };
 
+std::map<std::string, int> qualityRank = {
+    {"1080p", 5},
+    {"720p", 4},
+    {"480p", 3},
+    {"360p", 2},
+    {"144p", 1}
+};
+
 std::string movie_url;
 bool is_movie;
+
+std::string getHighestQualityUrl(const json& urls) {
+	std::string bestUrl = "";
+	int bestRank{0};
+
+	for (const auto& item : urls) {
+	        std::string label = item["quality"];
+	        std::string url = item["url"];
+	
+	        if (qualityRank[label] > bestRank) {
+	            bestRank = qualityRank[label];
+	            bestUrl = url;
+	        }
+	    }
+	    
+	return bestUrl;
+}
 
 // Yardım menüsü
 void printHelp() 
@@ -365,11 +390,13 @@ int main(int argc, char* argv[]) {
 
                 if (!watch_url.empty()) 
                 {
-                    // URL'yi al
-                    std::string video_url = watch_url.back().at("url");
+                    // URL'yi al	
+                    //std::string video_url = watch_url.back().at("url");
+                    std::string video_url = getHighestQualityUrl(watch_url);
 
                     // MPV ile izleme başlat
                     std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
+			    //  std::cout << video_url << "\n";
                     std::string mpv_cmd = "mpv --fullscreen " + video_url + " > /dev/null 2>&1";
                     system(mpv_cmd.c_str());
                 } 
