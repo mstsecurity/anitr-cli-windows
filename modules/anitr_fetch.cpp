@@ -13,7 +13,7 @@
 using json = nlohmann::json;
 	
 FetchData::FetchData() {
-    base_url = "https://animecix.net/";
+    base_url = "https://anm.cx/";
     video_players = {"tau-video.xyz", "sibnet"};
     headers["Accept"] = "application/json";
     headers["User-Agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/91.0.4472.124 Safari/537.36";
