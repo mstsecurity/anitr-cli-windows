@@ -219,7 +219,7 @@ std::vector<std::map<std::string, std::string>> FetchData::fetch_anime_watch_api
             }
         }
 
-        std::string apiUrl = "https://tau-video.xyz/api/video/" + embed_id + "?vid=" + vid_value;
+        std::string apiUrl = "https://tau-video.xyz/api/video/" + embed_id;
         std::vector<std::map<std::string, std::string>> urls;
 
         CURL* curl = curl_easy_init();
@@ -241,10 +241,25 @@ std::vector<std::map<std::string, std::string>> FetchData::fetch_anime_watch_api
                 // JSON verisini işlemek için nlohmann/json kütüphanesini kullanıyoruz
                 try {
                     nlohmann::json json_response = nlohmann::json::parse(response_string);
+
+					std::string subtitle_url = "No Subtitle";  // Varsayılan değer
+					
+                    if (json_response.contains("subs")) {
+                        for (const auto& subtitle : json_response["subs"]) {
+                            // Her bir altyazı için 'url' değerini al
+                            subtitle_url = subtitle.value("url", "No Subtitle URL");
+                            // İhtiyaç duyarsanız başka işlemler de ekleyebilirsiniz
+                        }
+                    } else {
+                        std::cerr << "'subs' dizisi boş veya eksik!" << std::endl;
+                    }
+                            
                     for (const auto& item : json_response["urls"]) {
                         std::map<std::string, std::string> urlData;
                         urlData["url"] = item.value("url", "No URL field");
                         urlData["quality"] = item.value("label", "Unknown");
+                        urlData["subtitle"] = subtitle_url;  // Altyazı linkini ekle
+                        
                         urls.push_back(urlData);
                     }
                 } catch (const nlohmann::json::parse_error& e) {

@@ -387,7 +387,6 @@ int main(int argc, char* argv[]) {
             
             	// Bölüm URL'si ile izleme URL'sini al
             	std::vector<std::map<std::string, std::string>> watch_url = fetchdata.fetch_anime_watch_api_url(episode_url);
-
                 if (!watch_url.empty()) 
                 {
                     // URL'yi al	
@@ -397,8 +396,15 @@ int main(int argc, char* argv[]) {
                     // MPV ile izleme başlat
                     std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
 			    //  std::cout << video_url << "\n";
-                    std::string mpv_cmd = "mpv --fullscreen " + video_url + " > /dev/null 2>&1";
-                    system(mpv_cmd.c_str());
+
+					std::string subtitle_url = watch_url[0]["subtitle"];
+					if (subtitle_url != "No Subtitle") {
+						std::string command = "mpv --fullscreen \"" + video_url + "\" --sub-file=\"" + subtitle_url + "\" > /dev/null 2>&1";
+					    system(command.c_str());  // MPV'yi altyazıyla başlat
+					} else {
+					    std::string command = "mpv --fullscreen \"" + video_url + "\" > /dev/null 2>&1";
+					    system(command.c_str());  // MPV'yi altyazısız başlat
+					}
                 } 
             
                 else 
@@ -441,8 +447,17 @@ int main(int argc, char* argv[]) {
 
                 // MPV ile izleme başlat
                 std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
-                std::string mpv_cmd = "mpv --fullscreen " + video_url + " > /dev/null 2>&1";
-                system(mpv_cmd.c_str());
+
+                std::string subtitle_url = watch_url[0]["subtitle"];
+
+                if (subtitle_url != "No Subtitle") {
+                	std::string command = "mpv --fullscreen \"" + video_url + "\" --sub-file=\"" + subtitle_url + "\" > /dev/null 2>&1";
+                    system(command.c_str());  // MPV'yi altyazıyla başlat
+                } else {
+                    std::string command = "mpv --fullscreen \"" + video_url + "\" > /dev/null 2>&1";
+                    system(command.c_str());  // MPV'yi altyazısız başlat
+                }
+
 
             } 
             
@@ -468,8 +483,17 @@ int main(int argc, char* argv[]) {
 
                 // MPV ile izleme başlat
                 std::cout << "İzleniyor: " << selected_anime_name << " " << anime_episodes[selected_episode_index].at("name") << "\n";
-                std::string mpv_cmd = "mpv --fullscreen " + video_url + " > /dev/null 2>&1";
-                system(mpv_cmd.c_str());
+
+				std::string subtitle_url = watch_url[0]["subtitle"];
+
+				if (subtitle_url != "No Subtitle") {
+					std::string command = "mpv --fullscreen \"" + video_url + "\" --sub-file=\"" + subtitle_url + "\" > /dev/null 2>&1";
+				    system(command.c_str());  // MPV'yi altyazıyla başlat
+				} else {
+				    std::string command = "mpv --fullscreen \"" + video_url + "\" > /dev/null 2>&1";
+				    system(command.c_str());  // MPV'yi altyazısız başlat
+				}
+
 
             } 
             
