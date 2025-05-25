@@ -124,9 +124,9 @@ int main(int argc, char* argv[]) {
     std::string selectedSource = getSelectedSourceWithRofi(source_options);
 
     if (selectedSource == "AnimeciX") {
-        system("./animecix-cli");
+        system("animecix-cli");
     } else if (selectedSource == "OpenAnime") {
-        system("./openanime-cli");
+        system("openanime-cli");
     } else {
         exit(1);
     }
