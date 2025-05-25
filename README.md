@@ -67,7 +67,9 @@ sudo cp build/anitr-cli build/animecix-cli build/openanime-cli /usr/bin/
 
 Anime izlemeye başlamak için terminalinize `anitr-cli` komutunu yazmanız yeterlidir.
 
-?> Eğer kaynak olarak Animecix’i seçerseniz, anime filmleri (movie) oynatılamaz. Bunun sebebi, Animecix üzerinden veri çekilirken film içeriklerinin sunulmamasıdır. Anime filmlerini izlemek istiyorsanız, kaynak olarak OpenAnime’i seçmeniz gerekmektedir.
+> [!WARNING]  
+> Eğer kaynak olarak Animecix’i seçerseniz, anime filmleri (movie) oynatılamaz. Bunun sebebi, Animecix üzerinden veri çekilirken film içeriklerinin sunulmamasıdır. Anime filmlerini izlemek istiyorsanız, kaynak olarak OpenAnime’i seçmeniz gerekmektedir.
+
 
 İlk kez çalıştırdığınızda açılan rofi menüsü şu şekilde gözükecektir:
 
