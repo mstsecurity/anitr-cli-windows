@@ -2,9 +2,9 @@
   <h1>Önizleme</h1>
 </div>
 
-[preview.mp4](https://github.com/user-attachments/assets/38ea6b98-b586-43d0-b3f1-19615da4c378)
+[preview.mp4](https://github.com/user-attachments/assets/b788b569-df31-4559-8a7c-fb9d8e5099fa)
 
-**aniTR-CLI:** Hızlı bir şekilde anime araması yapabileceğiniz ve istediğiniz animeyi Türkçe altyazılı izleyebileceğiniz terminal aracıdır 💫 Anime severler için hafif, pratik ve kullanışlı bir çözüm sunar 🚀
+**anitr-cli:** Hızlı bir şekilde anime araması yapabileceğiniz ve istediğiniz animeyi Türkçe altyazılı izleyebileceğiniz terminal aracıdır 💫 Anime severler için hafif, pratik ve kullanışlı bir çözüm sunar 🚀
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/xeyossr/anitr-cli?style=for-the-badge)
 ![AUR](https://img.shields.io/aur/version/anitr-cli?style=for-the-badge)
@@ -27,7 +27,7 @@ cd anitr-cli
 ```
 
 2. **Bağımlılıkları yükleyin:**
-   AniTR-CLI'yi kullanabilmek için sisteminizde şu araçların yüklü olması gerekir:
+   anitr-cli'yi kullanabilmek için sisteminizde şu araçların yüklü olması gerekir:
 
 - `curl`, `mpv` ve `rofi` (veya Wayland kullanıyorsanız `rofi-wayland`),
 - Derleme işlemleri için `gcc`, `cmake` ve `make`.
@@ -54,19 +54,22 @@ Bağımlılıkları kurduktan sonra, AniTR-CLI'yi derlemek için sırasıyla aş
 
 ```bash
 mkdir -p build && cd build
-cmake ..
-make
+cmake .. && make
 ```
 
-ardından, derlenmiş dosyayı `/usr/bin/` dizinine taşımanızı öneririm.
+ardından, derlenmiş dosyaları `/usr/bin/` dizinine taşıyoruz:
 
 ```bash
-sudo cp build/anitr-cli /usr/bin/anitr-cli
+sudo cp build/anitr-cli build/animecix-cli build/openanime-cli /usr/bin/
 ```
 
 ## 👾 Kullanım
 
-Anime izlemeye başlamak için terminalinize `anitr-cli` komutunu yazmanız yeterlidir. Ancak, ilk kez çalıştırdığınızda açılan rofi menüsü şu şekilde gözükecektir:
+Anime izlemeye başlamak için terminalinize `anitr-cli` komutunu yazmanız yeterlidir.
+
+?> Eğer kaynak olarak Animecix’i seçerseniz, anime filmleri (movie) oynatılamaz. Bunun sebebi, Animecix üzerinden veri çekilirken film içeriklerinin sunulmamasıdır. Anime filmlerini izlemek istiyorsanız, kaynak olarak OpenAnime’i seçmeniz gerekmektedir.
+
+İlk kez çalıştırdığınızda açılan rofi menüsü şu şekilde gözükecektir:
 
 ![preview1](assets/preview-1.png)
 
