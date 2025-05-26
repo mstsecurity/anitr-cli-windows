@@ -36,16 +36,16 @@ Bu paketleri dağıtımınıza uygun bir şekilde aşağıdaki komutlarla yükle
 
 ```bash
 # Arch:
-sudo pacman -S curl mpv rofi gcc cmake make
+sudo pacman -S curl mpv rofi gcc cmake make nlohmann-json
 
 # Debian/Ubuntu:
-sudo apt install curl mpv rofi gcc cmake make
+sudo apt install curl mpv rofi gcc cmake make nlohmann-json3-dev
 
 # Fedora/RHEL:
-sudo dnf install curl mpv rofi gcc cmake make
+sudo dnf install curl mpv rofi gcc cmake make && wget https://github.com/nlohmann/json/releases/latest/download/json.hpp -P include/nlohmann
 
 # OpenSUSE:
-sudo zypper install curl mpv rofi gcc cmake make
+sudo zypper install curl mpv rofi gcc cmake make nlohmann_json
 ```
 
 3. **Derleyin:**
