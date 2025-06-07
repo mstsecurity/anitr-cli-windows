@@ -171,7 +171,7 @@ int main() {
         selected_anime_name = getInputFromRofi("Anime Seç", anime_names);
 
         // Eğer arama kısmına <exit> ya da exit yazılırsa çık
-        if (selected_anime_name == "<exit>" || selected_anime_name == "exit") exit(0);
+        if (selected_anime_name == "<exit>" || selected_anime_name == "exit" || selected_anime_name == "Çık") exit(0);
 
         // Şartlar
         bool is_not_in_anime_names = std::find(anime_names.begin(), anime_names.end(), selected_anime_name) == anime_names.end();

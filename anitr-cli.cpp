@@ -3,6 +3,7 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
+#include <unistd.h>
 
 // Yardım menüsü
 void printHelp() 
@@ -126,10 +127,12 @@ int main(int argc, char* argv[]) {
     if (selectedSource == "AnimeciX") {
         system("animecix-cli");
     } else if (selectedSource == "OpenAnime") {
-        system("openanime-cli");
+        system("./openanime-cli");
     } else {
         exit(1);
     }
 
     return 0;
 }
+
+
