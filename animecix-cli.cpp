@@ -44,10 +44,21 @@ std::string getHighestQualityUrl(const json& urls) {
 	return bestUrl;
 }
 
+// Özel karakterler hataya sebep olmaması için funksiyon
+std::string shell_escape(const std::string& input) {
+    std::string escaped;
+    for (char c : input) {
+        if (c == '"' || c == '\\' || c == '$' || c == '`') {
+            escaped += '\\';  // kaçış karakteri ekle
+        }
+        escaped += c;
+    }
+    return escaped;
+}
+
 // Kullanıcıdan rofi ile giriş alacak fonksiyon
 std::string getInputFromRofi(const std::string& prompt, const std::vector<std::string>& options) 
 {
-    // Rofi parametrelerini okumak için konfigürasyon dosyasını kontrol et
     std::string rofi_flags = "";
     std::ifstream config_file(std::string(getenv("HOME")) + "/.config/anitr-cli/rofi-flags.conf");
 
@@ -56,50 +67,36 @@ std::string getInputFromRofi(const std::string& prompt, const std::vector<std::s
         std::string line;
         while (std::getline(config_file, line)) 
         {
-            // Eğer satır boş değilse ve ya başında # yoksa
             if (!line.empty() && line[0] != '#') 
             {
-                rofi_flags += line + " ";  // Parametreleri birleştir
+                rofi_flags += line + " ";
             }
         }
-        
         config_file.close();
     }
 
     // Rofi komutunu oluştur
-    std::string rofi_cmd = "{ echo '" + prompt + "\n" + 
-                            "\n" + 
-                            "[\n" + 
-                            "  '" + prompt + "'\n" +
-                            "'<back>'\n" +
-                            "'<exit>'" + 
-                            "']\n\n" ;
-
-    rofi_cmd += "echo -e \"" ;
+    std::string rofi_cmd = "echo -e \"";
 
     for (const auto& option : options) 
     {
-        rofi_cmd += option + "\n";
+        rofi_cmd += shell_escape(option) + "\\n";
     }
 
-    rofi_cmd += "\" | rofi -dmenu -p '" + prompt + "' " + rofi_flags + "; } 2>/dev/null";  // Çıktıyı gizle
-
-    std::string selected;
+    rofi_cmd += "\" | rofi -dmenu -p \"" + shell_escape(prompt) + "\" " + rofi_flags + " 2>/dev/null";
     
+    std::string selected;
     FILE* fp = popen(rofi_cmd.c_str(), "r");
     if (fp != NULL) 
     {
         char buffer[1024];
-        
         if (fgets(buffer, sizeof(buffer), fp) != NULL) 
         {
             selected = buffer;
         }
-        
         fclose(fp);
     }
 
-    // Satır sonu karakterini kaldır
     if (!selected.empty() && selected.back() == '\n') 
     {
         selected.pop_back();
@@ -170,34 +167,24 @@ int main() {
         // Anime seçimi
         selected_anime_name = getInputFromRofi("Anime Seç", anime_names);
 
-        // Eğer arama kısmına <exit> ya da exit yazılırsa çık
+        // Eğer arama kısmına <exit> ya da exit ya da Çık yazılırsa çık
         if (selected_anime_name == "<exit>" || selected_anime_name == "exit" || selected_anime_name == "Çık") exit(0);
-
-        // Şartlar
-        bool is_not_in_anime_names = std::find(anime_names.begin(), anime_names.end(), selected_anime_name) == anime_names.end();
-        bool is_not_exit_command = selected_anime_name != "Çık";
-        
-        // Eğer selected_anime_name, anime_names içerisindeki bir öğe değilse ve Çık değilse döngüye devam et
-        if (is_not_in_anime_names && is_not_exit_command) 
-        {
-            continue;
-        }
 
         // Döngüden çık
         break;
 
     }
 
-    // Seçilen animeyi bul
-    std::map<std::string, std::string> selected_anime;
-    for (const auto& item : results) 
-    {
-        if (item.at("name") == selected_anime_name) 
-        {
-            selected_anime = item;
-            break;
-        }
-    }
+	// Seçilen animeyi bul
+	std::map<std::string, std::string> selected_anime;
+	for (const auto& item : results) 
+	{
+	    if (item.at("name") == selected_anime_name) 
+	    {
+	        selected_anime = item;
+	        break;
+	    }
+	}
 
     // Seçilen animenin bölümlerini al
     std::string selected_id = selected_anime.at("id");
@@ -261,19 +248,9 @@ int main() {
             selected_anime_name = getInputFromRofi("Anime Seç", anime_names);
 
             // Eğer arama kısmına <exit> ya da exit yazılırsa çık
-            if (selected_anime_name == "<exit>" || selected_anime_name == "exit") 
+            if (selected_anime_name == "<exit>" || selected_anime_name == "exit" || selected_anime_name == "Çık") 
             {
                 exit(0);
-            }
-
-            // Şartlar
-            bool is_not_in_anime_names = std::find(anime_names.begin(), anime_names.end(), selected_anime_name) == anime_names.end();
-            bool is_not_exit_command = selected_anime_name != "Çık";
-
-            // Eğer selected_anime_name, anime_names içerisindeki bir öğe değilse ve Çık değilse döngüye devam et
-            if (is_not_in_anime_names && is_not_exit_command) 
-            {
-                continue;
             }
 
             // Seçilen animeyi bul

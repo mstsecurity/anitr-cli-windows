@@ -3,7 +3,6 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
-#include <unistd.h>
 
 // Yardım menüsü
 void printHelp() 

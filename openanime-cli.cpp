@@ -150,16 +150,6 @@ int main() {
         // Eğer arama kısmına <exit> ya da exit yazılırsa çık
         if (selected_anime_name == "<exit>" || selected_anime_name == "exit" || selected_anime_name == "Çık") exit(0);
 
-        // Şartlar
-        bool is_not_in_anime_names = std::find(anime_names.begin(), anime_names.end(), selected_anime_name) == anime_names.end();
-        bool is_not_exit_command = selected_anime_name != "Çık";
-        
-        // Eğer selected_anime_name, anime_names içerisindeki bir öğe değilse ve Çık değilse döngüye devam et
-        if (is_not_in_anime_names && is_not_exit_command) 
-        {
-            continue;
-        }
-
         // Döngüden çık
         break;
 
@@ -305,15 +295,8 @@ int main() {
         
             selected_anime_name = getInputFromRofi("Anime Seç", anime_names);
         
-            if (selected_anime_name == "<exit>" || selected_anime_name == "exit") {
+            if (selected_anime_name == "<exit>" || selected_anime_name == "exit" || selected_anime_name == "Çık") {
                 exit(0);
-            }
-        
-            bool is_not_in_anime_names = std::find(anime_names.begin(), anime_names.end(), selected_anime_name) == anime_names.end();
-            bool is_not_exit_command = selected_anime_name != "Çık";
-        
-            if (is_not_in_anime_names && is_not_exit_command) {
-                continue;
             }
         
             std::map<std::string, std::string> selected_anime;
