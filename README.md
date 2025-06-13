@@ -2,7 +2,7 @@
   <h1>Önizleme</h1>
 </div>
 
-[preview.mp4](https://github.com/user-attachments/assets/1029cfde-95f7-4837-ae13-6a89749184df)
+[preview.mp4](https://github.com/user-attachments/assets/497bf13f-6069-4e8d-8808-9ab06d2bef7a)
 
 **anitr-cli:** Hızlı bir şekilde anime araması yapabileceğiniz ve istediğiniz animeyi Türkçe altyazılı izleyebileceğiniz terminal aracıdır 💫 Anime severler için hafif, pratik ve kullanışlı bir çözüm sunar 🚀
 
