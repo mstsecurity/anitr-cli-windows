@@ -51,11 +51,7 @@ DEFAULT_UI=rofi
 ```
 
 `ROFI_FLAGS` — Rofi modunda çalıştırırken ek parametreler eklemek için kullanılır.
-Örneğin: `ROFI_FLAGS=-i -width 50`
-
 `ROFI_THEME` — Rofi arayüzü için özel bir tema belirtmek için kullanılır.
-Örnek: `ROFI_THEME=/path/to/theme.rasi`
-
 `DEFAULT_UI` — Uygulamanın varsayılan arayüzünü belirler. `rofi` veya `tui` olarak ayarlanabilir.
 
 ## Sorunlar
