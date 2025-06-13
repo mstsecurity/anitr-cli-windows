@@ -5,11 +5,21 @@ import modules.player as player
 import modules.ui as ui
 
 from dotenv import load_dotenv
-import argparse, sys, os, re
+import subprocess, argparse, sys, os, re
 
 load_dotenv(os.path.expanduser("~/.config/anitr-cli/config"))
 default_ui = os.getenv("DEFAULT_UI", "tui")
 sources = ["AnimeciX (anm.cx)", "OpenAnime (openani.me)"]
+
+def print_smart(text: str, notification_msg: str, notification: bool = True):
+    if default_ui == "rofi":
+        if notification:
+            send_notification("anitr-cli", notification_msg)
+    else:
+        print(text)
+
+def send_notification(title, message):
+    subprocess.run(['notify-send', '-a', title, message])
 
 def get_source() -> str:
     return ui.select_menu(default_ui, sources, "Kaynak seç:", False)
@@ -67,6 +77,7 @@ def AnimeciX():
 
     def update_watch_api(index):
         data = animecix().fetch_anime_watch_api_url(anime_episodes_data[index]["url"])
+        data.sort(key=lambda x: int(x['label'][:-1]), reverse=True)
         labels = [item['label'] for item in data]
         urls = [item['url'] for item in data]
         return data, labels, urls
@@ -90,7 +101,7 @@ def AnimeciX():
                            f" {selected_episode_index + 1}/{total_episodes}"
                            if selected_anime_name else "")
             
-        print(menu_header)
+        print_smart(menu_header, "", False)
         selected_option = ui.select_menu(default_ui, anime_series_menu_options, "", False, menu_header)
 
         if selected_option == "İzle":
@@ -110,10 +121,15 @@ def AnimeciX():
             while selected_resolution_index >= len(watch_api_urls):
                 selected_resolution_index -= 1
 
+            print_smart(
+                f"\033[33mOynatılıyor\033[0m: {selected_episode_name}", 
+                f"{selected_anime_name}, {selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor"
+            )
+
             selected_season_index = anime_episodes_data[selected_episode_index]["season_num"] - 1
             watch_url = watch_api_urls[selected_resolution_index]
             subtitle_url = animecix().fetch_tr_caption_url(selected_season_index, selected_episode_index, selected_anime_id)
-            print(f"\033[33mOynatılıyor\033[0m: {selected_episode_name}")
+
             player.open_with_video_player(watch_url, subtitle_url)
             continue
 
@@ -226,6 +242,8 @@ def OpenAnime():
         data = openanime().get_stream_url(selected_anime_slug, episode_data["episode"], episode_data["season"])
         if not data:
             return [], [], []
+        
+        data.sort(key=lambda x: int(x['resolution']), reverse=True)
         labels = [f"{item['resolution']}p" for item in data]
         urls = [item['url'] for item in data]
         return data, labels, urls
@@ -240,7 +258,7 @@ def OpenAnime():
                            f" {selected_episode_index + 1}/{total_episodes}"
                            if selected_anime_name else "")
 
-        print(menu_header)
+        print_smart(menu_header, "", False)
         selected_option = ui.select_menu(default_ui, anime_series_menu_options, "", False, menu_header)
 
         if selected_option in ["İzle", "Filmi izle"]:
@@ -260,11 +278,15 @@ def OpenAnime():
             while selected_resolution_index >= len(watch_api_urls):
                 selected_resolution_index -= 1
 
+            print_smart(
+                f"\033[33mOynatılıyor\033[0m: {selected_episode_name}",
+                f"{selected_anime_name}, {selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor"
+            )
+
             raw_video_url = watch_api_urls[selected_resolution_index]
             season_for_url = 1 if is_movie else anime_episodes_data[selected_episode_index]["season"]
             watch_url = f"{openanime().player}/animes/{selected_anime_slug}/{season_for_url}/{raw_video_url}"
             subtitle_url = None
-            print(f"\033[33mOynatılıyor\033[0m: {selected_episode_name}")
             player.open_with_video_player(watch_url, subtitle_url)
             continue
 
