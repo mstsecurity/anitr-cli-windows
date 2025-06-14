@@ -4,6 +4,10 @@
 
 [preview.mp4](https://github.com/user-attachments/assets/a2999190-a38c-453d-a50b-7e952aa68a37)
 
+<p>
+  <img src="assets/discord_rpc_preview.png"/>
+</p>
+
 **anitr-cli:** Hızlı bir şekilde anime araması yapabileceğiniz ve istediğiniz animeyi Türkçe altyazılı izleyebileceğiniz terminal aracıdır 💫 Anime severler için hafif, pratik ve kullanışlı bir çözüm sunar 🚀
 
 ![GitHub release (latest by date)](https://img.shields.io/github/v/release/xeyossr/anitr-cli?style=for-the-badge)
@@ -28,15 +32,18 @@ sudo curl -sL "$(curl -s https://api.github.com/repos/xeyossr/anitr-cli/releases
 ## 👾 Kullanım
 
 ```bash
-usage: anitr-cli.py [-h] [--rofi | --tui | --update]
+usage: anitr-cli.py [-h] [--source {AnimeciX,OpenAnime}] [--disable-rpc] [--rofi | --tui] [--update]
 
 💫 Terminalden anime izlemek için CLI aracı.
 
 options:
-  -h, --help  show this help message and exit
-  --rofi      Uygulamanın arayüzünü rofi ile açar.
-  --tui       Terminalde TUI arayüzü ile açar.
-  --update    anitr-cli aracını en son sürüme günceller.
+  -h, --help            show this help message and exit
+  --source {AnimeciX,OpenAnime}
+                        Hangi kaynak ile anime izlemek istediğinizi belirtir. (default: None)
+  --disable-rpc         Discord Rich Presence özelliğini devre dışı bırakır. (default: False)
+  --rofi                Uygulamanın arayüzünü rofi ile açar. (default: False)
+  --tui                 Terminalde TUI arayüzü ile açar. (default: False)
+  --update              anitr-cli aracını en son sürüme günceller. (default: False)
 ```
 
 ## Yapılandırma
@@ -48,11 +55,13 @@ Aşağıdaki ortam değişkenleri ile uygulamanın davranışını özelleştire
 ROFI_FLAGS=-i -width 50
 ROFI_THEME=/path/to/theme.rasi
 DEFAULT_UI=rofi
+DISCORD_RPC=Enabled
 ```
 
 `ROFI_FLAGS` — Rofi modunda çalıştırırken ek parametreler eklemek için kullanılır.
 `ROFI_THEME` — Rofi arayüzü için özel bir tema belirtmek için kullanılır.
 `DEFAULT_UI` — Uygulamanın varsayılan arayüzünü belirler. `rofi` veya `tui` olarak ayarlanabilir.
+`DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.
 
 ## Sorunlar
 
