@@ -1,3 +1,5 @@
-dotenv
 requests
 InquirerPy
+inquirer
+dotenv
+packaging
