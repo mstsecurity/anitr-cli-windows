@@ -3,3 +3,4 @@ InquirerPy
 inquirer
 dotenv
 packaging
+pypresence
