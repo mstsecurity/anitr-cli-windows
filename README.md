@@ -58,10 +58,10 @@ DEFAULT_UI=rofi
 DISCORD_RPC=Enabled
 ```
 
-`ROFI_FLAGS` — Rofi modunda çalıştırırken ek parametreler eklemek için kullanılır.
-`ROFI_THEME` — Rofi arayüzü için özel bir tema belirtmek için kullanılır.
-`DEFAULT_UI` — Uygulamanın varsayılan arayüzünü belirler. `rofi` veya `tui` olarak ayarlanabilir.
-`DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.
+`ROFI_FLAGS` — Rofi modunda çalıştırırken ek parametreler eklemek için kullanılır.  
+`ROFI_THEME` — Rofi arayüzü için özel bir tema belirtmek için kullanılır.  
+`DEFAULT_UI` — Uygulamanın varsayılan arayüzünü belirler. `rofi` veya `tui` olarak ayarlanabilir.  
+`DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.  
 
 ## Sorunlar
 
