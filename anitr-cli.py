@@ -40,72 +40,118 @@ def parse_arguments():
         action="store_true",
         help="Terminalde TUI arayüzü ile açar."
     )
+    group.add_argument(
+        "--update",
+        action="store_true",
+        help="anitr-cli aracını en son sürüme günceller."
+    )
 
     return parser.parse_args()
 
-def AnimeciX():
-    def remove_movies_animecix(data):
-        return [
-            item for item in data
-            if item.get("type") != "movie" and item.get("title_type") != "movie"
-        ]
-    
+def AnimeciX():    
     query = ui.search_menu(default_ui, "Anime ara >")
     
     if not query or query == "Çık":
         return
 
     search_data = animecix().fetch_anime_search_data(query)
-    search_data = remove_movies_animecix(search_data)
     
-    anime_data = [{"name": item["name"], "id": item["id"]} for item in search_data]
+    anime_data = [{"name": item["name"], "id": item["id"], "title_type": item.get("title_type", ""), "type": item.get("type", "")} for item in search_data]
     anime_names = [f'{item["name"]} (ID: {item["id"]})' for item in anime_data]
-    
+    anime_types = [
+        "movie" if (item["title_type"] and item["title_type"].lower() == "movie") or 
+                    (item["type"] and item["type"].lower() == "movie") else "tv"
+        for item in anime_data
+    ]
+
     selected_anime_name = ui.select_menu(default_ui, anime_names, "Anime seç:", True)
     if not selected_anime_name:
         return
 
+    selected_anime_index = anime_names.index(selected_anime_name)
+    selected_anime_type = anime_types[selected_anime_index]
+    is_movie = selected_anime_type == "movie"
+    
     match = re.match(r'(.+) \(ID: (\d+)\)', selected_anime_name)
     if match:
         selected_anime_name = match.group(1)
         selected_anime_id = match.group(2)
 
-    # labels = []  # kullanılmıyor
     selected_index, selected_label = None, None 
     selected_resolution_index = 0  
     selected_resolution = None 
 
-    def update_watch_api(index):
-        data = animecix().fetch_anime_watch_api_url(anime_episodes_data[index]["url"])
-        data.sort(key=lambda x: int(x['label'][:-1]), reverse=True)
+    def update_watch_api(index, selected_id):
+        if is_movie:
+            data = animecix().fetch_anime_movie_watch_api_url(selected_id)
+            # Movie verisi: {'video_streams': [{'label': '480p', 'url': '...'}, ...]}
+            data = data.get("video_streams", []) # type: ignore
+            
+            caption_url = None
+            for stream in data:
+                if "caption_url" in stream:
+                    caption_url = stream["caption_url"]
+                    break
+
+        else:
+            data = animecix().fetch_anime_watch_api_url(anime_episodes_data[index]["url"])
+            # Dizi verisi: [{'label': '1080p', 'url': '...'}, ...]
+
+            caption_url = animecix().fetch_tr_caption_url(selected_season_index, selected_episode_index, selected_anime_id)
+
+        try:
+            data.sort(key=lambda x: int(x['label'][:-1]), reverse=True)
+        except Exception:
+            pass
+
         labels = [item['label'] for item in data]
         urls = [item['url'] for item in data]
-        return data, labels, urls
+        return data, labels, urls, caption_url
 
-    anime_episodes_data = animecix().fetch_anime_episodes(selected_anime_id)
-    anime_episode_names = [item['name'] for item in anime_episodes_data]
-    selected_episode_index = 0
-    total_episodes = len(anime_episode_names)
-    selected_episode_name = anime_episode_names[selected_episode_index]
-    selected_season_index = anime_episodes_data[selected_episode_index]["season_num"] - 1
 
-    anime_series_menu_options = ["İzle", "Sonraki bölüm", "Önceki bölüm", "Bölüm seç", "Çözünürlük seç", "Anime ara", "Çık"]
+    if not is_movie:
+        anime_episodes_data = animecix().fetch_anime_episodes(selected_anime_id)
+        anime_episode_names = [item['name'] for item in anime_episodes_data]
+        selected_episode_index = 0
+        total_episodes = len(anime_episode_names)
+        selected_episode_name = anime_episode_names[selected_episode_index]
+        selected_season_index = anime_episodes_data[selected_episode_index]["season_num"] - 1
+    else:
+        selected_episode_index = 0
+        total_episodes = 1 
+        selected_episode_name = selected_anime_name 
+        selected_season_index = 0
 
+
+    anime_series_menu_options = (
+        ["Filmi izle", "Çözünürlük seç", "Anime ara", "Çık"] if is_movie else
+        ["İzle", "Sonraki bölüm", "Önceki bölüm", "Bölüm seç", "Çözünürlük seç", "Anime ara", "Çık"]
+    )
+    
     while True:
         if selected_resolution:
-            menu_header = (f"\033[33mOynatılıyor\033[0m: {selected_anime_name} ({selected_resolution}) |"
-                           f" {selected_episode_index + 1}/{total_episodes}"
-                           if selected_anime_name else "")
+            if not is_movie:
+                menu_header = (f"\033[33mOynatılıyor\033[0m: {selected_anime_name} ({selected_resolution}) |"
+                               f" {selected_episode_index + 1}/{total_episodes}"
+                               if selected_anime_name else "")
+            elif is_movie:
+                menu_header = (f"\033[33mOynatılıyor\033[0m: {selected_anime_name} ({selected_resolution})"
+                               if selected_anime_name else "")
+        
         else:
-            menu_header = (f"\033[33mOynatılıyor\033[0m: {selected_anime_name} |"
-                           f" {selected_episode_index + 1}/{total_episodes}"
-                           if selected_anime_name else "")
-            
+            if not is_movie:
+                menu_header = (f"\033[33mOynatılıyor\033[0m: {selected_anime_name} |"
+                               f" {selected_episode_index + 1}/{total_episodes}"
+                               if selected_anime_name else "")
+            elif is_movie:
+                menu_header = (f"\033[33mOynatılıyor\033[0m: {selected_anime_name}"
+                               if selected_anime_name else "")
+
         print_smart(menu_header, "", False)
         selected_option = ui.select_menu(default_ui, anime_series_menu_options, "", False, menu_header)
 
-        if selected_option == "İzle":
-            watch_api_data, watch_api_labels, watch_api_urls = update_watch_api(selected_episode_index)
+        if selected_option == "İzle" or selected_option == "Filmi izle":
+            watch_api_data, watch_api_labels, watch_api_urls, subtitle_url = update_watch_api(selected_episode_index, selected_anime_id)
 
             if selected_resolution is None:
                 if watch_api_labels:
@@ -115,20 +161,24 @@ def AnimeciX():
                     selected_resolution = selected_label 
                     selected_resolution_index = selected_index
                 else:
-                    # selected_resolution = watch_api_labels[0]  # hata verebilir çünkü watch_api_labels boş olabilir
                     selected_resolution_index = 0
 
             while selected_resolution_index >= len(watch_api_urls):
                 selected_resolution_index -= 1
 
-            print_smart(
-                f"\033[33mOynatılıyor\033[0m: {selected_episode_name}", 
-                f"{selected_anime_name}, {selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor"
-            )
+            if not is_movie:
+                print_smart(
+                    f"\033[33mOynatılıyor\033[0m: {selected_episode_name}", 
+                    f"{selected_anime_name}, {selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor"
+                )
+            elif is_movie:
+                print_smart(
+                    f"\033[33mOynatılıyor\033[0m: {selected_anime_name}", 
+                    f"{selected_anime_name} oynatılıyor"
+                )
 
-            selected_season_index = anime_episodes_data[selected_episode_index]["season_num"] - 1
+            selected_season_index = anime_episodes_data[selected_episode_index]["season_num"] - 1 if not is_movie else 0
             watch_url = watch_api_urls[selected_resolution_index]
-            subtitle_url = animecix().fetch_tr_caption_url(selected_season_index, selected_episode_index, selected_anime_id)
 
             player.open_with_video_player(watch_url, subtitle_url)
             continue
@@ -160,7 +210,7 @@ def AnimeciX():
             continue
         
         elif selected_option == "Çözünürlük seç":
-            watch_api_data, watch_api_labels, watch_api_urls = update_watch_api(selected_episode_index)
+            watch_api_data, watch_api_labels, watch_api_urls, subtitle_url = update_watch_api(selected_episode_index, selected_anime_id)
             selected_resolution = ui.select_menu(default_ui, watch_api_labels, "Çözünürlük seç:", False)
 
             if not selected_resolution:
@@ -194,7 +244,6 @@ def OpenAnime():
         selected_anime_name = match.group(1)
         selected_anime_slug = match.group(2)
 
-    # labels = []  # kullanılmıyor
     selected_index, selected_label = None, None 
     selected_resolution_index = 0  
     selected_resolution = None 
@@ -216,12 +265,6 @@ def OpenAnime():
                 anime_episode_names.append(f"{episode}. Bölüm")
             else:
                 anime_episode_names.append(f"{season}. Sezon, {episode}. Bölüm")
-
-    # seasons_data = openanime().get_seasons(selected_anime_slug)  # tekrar alınmış, gereksiz
-    # anime_type = seasons_data.get("type", "movie")  # tekrar alınmış, gereksiz
-    # is_movie = anime_type == "movie"  # tekrar alınmış, gereksiz
-
-    # anime_episodes_data = openanime().get_episodes(selected_anime_slug, is_movie)  # tekrar alınmış, gereksiz
 
     if not anime_episodes_data:
         ui.show_error(default_ui, "Bu animeye ait bölüm bulunamadı.")
@@ -332,13 +375,29 @@ def OpenAnime():
             sys.exit()
 
 def main():
+    import modules.update as update
+    
     global default_ui
     args = parse_arguments()
 
+    if not args.update:
+        if update.check_update_notice():
+            send_notification("anitr-cli", update.check_update_notice())
+    
     if args.rofi:
         default_ui = "rofi"
     elif args.tui:
         default_ui = "tui"
+    elif args.update:
+        from packaging import version
+
+        latest = update.get_latest_version()
+        if version.parse(latest) > version.parse(update.CURRENT_VERSION):
+            print(f"Yeni sürüm bulundu: \033[31mv{update.CURRENT_VERSION}\033[0m → \033[32mv{latest}\033[0m")
+            update.download_and_replace_binary()
+        else:
+            print("Zaten en güncel sürümdesiniz.")
+        sys.exit()
     
     selected_source = get_source()
     if selected_source == "AnimeciX (anm.cx)":
