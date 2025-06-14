@@ -96,6 +96,53 @@ class animecix:
                 return caption.get("url")
         return captions[0].get("url") if captions else None
 
+    
+    def fetch_anime_movie_watch_api_url(self, title_id):
+        url = f"{self.base_url}secure/titles/{title_id}?titleId={title_id}"
+        movie_headers = self.headers.copy()
+        movie_headers["x-e-h"] = "=.a"
+
+        try:
+            response = requests.get(url, headers=movie_headers)
+            response.raise_for_status()
+            data = response.json()
+
+            videos = data.get("title", {}).get("videos", [])
+            
+            for video in videos:
+                video_url = video.get("url")
+                if video_url:
+                    resp = requests.get(video_url, headers=self.headers, allow_redirects=True)
+                    resp.raise_for_status()
+                    final_url = resp.url
+
+                    path = urlparse(final_url).path
+                    embed_id = path.split('/')[2]
+                    query = urlparse(final_url).query
+                    vid = parse_qs(query).get('vid', [None])[0]
+
+                    api_url = f"https://{self.video_players[0]}/api/video/{embed_id}?vid={vid}"
+                    wtch_resp = requests.get(api_url)
+                    wtch_resp.raise_for_status()
+                    urls = wtch_resp.json().get('urls', [])
+
+                    result = {
+                        "video_streams": [{'label': item.get('label', 'No Label field'), 'url': item.get('url', 'No URL field')} for item in urls]
+                    }
+
+                    captions = video.get("captions", [])
+                    if captions:
+                        for caption in captions:
+                            if caption.get("language", "").lower() == "tr":
+                                result["caption_url"] = caption.get("url")
+                                break
+                        else:
+                            result["caption_url"] = captions[0].get("url")
+                    return result
+        except requests.RequestException:
+            return None
+
+
 
 class openanime:
     def __init__(self):
