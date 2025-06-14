@@ -11,7 +11,7 @@
 
 ## 💻 Kurulum
 
-Eğer Arch tabanlı bir dağıtım kullanıyorsanız, AUR üzerinden tek bir komut ile indirebilirsiniz:
+Eğer Arch tabanlı bir dağıtım kullanıyorsanız, [AUR](https://aur.archlinux.org/packages/anitr-cli) üzerinden tek bir komut ile indirebilirsiniz:
 
 ```bash
 yay -S anitr-cli
@@ -23,10 +23,12 @@ Eğer Arch tabanlı olmayan bir dağıtım kullanıyorsanız projeyi [releases](
 curl -sL "$(curl -s https://api.github.com/repos/xeyossr/anitr-cli/releases/latest | grep browser_download_url | grep 'anitr-cli' | cut -d '"' -f 4)" -o /usr/bin/anitr-cli && chmod +x /usr/bin/anitr-cli
 ```
 
+[Releases](https://github.com/xeyossr/anitr-cli/releases) sayfasından anitr-cli'yi indirdikten sonra, her çalıştırdığınızda yeni bir güncelleme olup olmadığı denetlenecektir. Eğer güncelleme mevcutsa, `anitr-cli --update` komutuyla güncelleyebilirsiniz. Ancak anitr-cli'yi [AUR](https://aur.archlinux.org/packages/anitr-cli) üzerinden kurduysanız, güncelleme için `yay -Sy anitr-cli` komutunu kullanmanız önerilir.
+
 ## 👾 Kullanım
 
 ```bash
-usage: anitr-cli [-h] (--rofi | --tui)
+usage: anitr-cli.py [-h] [--rofi | --tui | --update]
 
 💫 Terminalden anime izlemek için CLI aracı.
 
@@ -34,10 +36,8 @@ options:
   -h, --help  show this help message and exit
   --rofi      Uygulamanın arayüzünü rofi ile açar.
   --tui       Terminalde TUI arayüzü ile açar.
+  --update    anitr-cli aracını en son sürüme günceller.
 ```
-
-> [!WARNING]  
-> Eğer kaynak olarak Animecix’i seçerseniz, anime filmleri (movie) oynatılamaz. Bunun sebebi, Animecix üzerinden veri çekilirken film içeriklerinin sunulmamasıdır. Anime filmlerini izlemek istiyorsanız, kaynak olarak OpenAnime’i seçmeniz gerekmektedir.
 
 ## Yapılandırma
 
