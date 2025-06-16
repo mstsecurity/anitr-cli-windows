@@ -5,7 +5,7 @@ import shutil
 import subprocess
 
 GITHUB_REPO = "xeyossr/anitr-cli"
-CURRENT_VERSION = "3.3.0"
+CURRENT_VERSION = "3.3.1"
 
 def get_latest_version():
     url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
