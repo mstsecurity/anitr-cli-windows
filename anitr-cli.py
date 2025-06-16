@@ -35,9 +35,12 @@ def log_anime_details(details: str, state: str, large_text: str, source: str, so
 
 def start_discord_rpc(client_id="1383421771159572600", filepath="/tmp/anime_details"):
     global rpc
-    if rpc is None:
-        rpc = Client(client_id)
-        rpc.start()
+    try:
+        if rpc is None:
+            rpc = Client(client_id)
+            rpc.start()
+    except Exception:
+        return
 
     try:
         with open(filepath, "r", encoding="utf-8") as f:
@@ -65,11 +68,14 @@ def start_discord_rpc(client_id="1383421771159572600", filepath="/tmp/anime_deta
         }
     }
 
-    rpc.send_data(1, {
-        "cmd": "SET_ACTIVITY",
-        "args": activity,
-        "nonce": "watching-anime"
-    })
+    try:
+        rpc.send_data(1, {
+            "cmd": "SET_ACTIVITY",
+            "args": activity,
+            "nonce": "watching-anime"
+        })
+    except Exception:
+        pass
 
 
 def update_discord_rpc(filepath="/tmp/anime_details"):
@@ -103,11 +109,14 @@ def update_discord_rpc(filepath="/tmp/anime_details"):
         }
     }
 
-    rpc.send_data(1, {
-        "cmd": "SET_ACTIVITY",
-        "args": activity,
-        "nonce": "watching-anime"
-    })
+    try:
+        rpc.send_data(1, {
+            "cmd": "SET_ACTIVITY",
+            "args": activity,
+            "nonce": "watching-anime"
+        })
+    except Exception:
+        pass
 
 def stop_discord_rpc():
     global rpc
