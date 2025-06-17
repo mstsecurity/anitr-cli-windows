@@ -2,7 +2,7 @@
   <h1>Önizleme</h1>
 </div>
 
-[preview.mp4](https://github.com/user-attachments/assets/a2999190-a38c-453d-a50b-7e952aa68a37)
+[preview.mp4](https://github.com/user-attachments/assets/a5806047-91d5-407b-a25b-6cae75f9355e)
 
 <p>
   <img src="assets/discord_rpc_preview.png"/>
@@ -61,7 +61,7 @@ DISCORD_RPC=Enabled
 `ROFI_FLAGS` — Rofi modunda çalıştırırken ek parametreler eklemek için kullanılır.  
 `ROFI_THEME` — Rofi arayüzü için özel bir tema belirtmek için kullanılır.  
 `DEFAULT_UI` — Uygulamanın varsayılan arayüzünü belirler. `rofi` veya `tui` olarak ayarlanabilir.  
-`DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.  
+`DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.
 
 ## Sorunlar
 
