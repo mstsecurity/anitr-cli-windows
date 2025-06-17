@@ -1,4 +1,5 @@
 import subprocess
+from . import utils
 
 def shell_escape(s):
     """Shell özel karakterlerini escape et"""
@@ -19,6 +20,11 @@ def get_input_from_rofi(options: list, prompt: str, theme=None, flags=None) -> s
     :param flags: (Opsiyonel) Rofi için ekstra bayraklar listesi (örnek: ['-someflag', 'value'])
     :return: Kullanıcının seçtiği seçenek (str)
     """
+
+    if subprocess.run(['which', 'rofi'], stdout=subprocess.DEVNULL).returncode != 0:
+        utils.send_notification("anitr-cli", "Rofi yüklü değil. Lütfen rofi'yi kurduğunuzdan emin olun.", "critical")
+        return ""
+    
     rofi_flags = flags or []
 
     if isinstance(rofi_flags, str):
