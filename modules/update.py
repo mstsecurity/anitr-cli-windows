@@ -3,18 +3,16 @@ import requests
 import os
 import shutil
 import subprocess
-
-GITHUB_REPO = "xeyossr/anitr-cli"
-CURRENT_VERSION = "3.3.1"
+from . import config
 
 def get_latest_version():
-    url = f"https://api.github.com/repos/{GITHUB_REPO}/releases/latest"
+    url = f"https://api.github.com/repos/{config.GITHUB_REPO}/releases/latest"
     response = requests.get(url)
     tag = response.json()["tag_name"]
     return tag.lstrip("v")  # "vx.x.x" → "x.x.x"
 
 def download_and_replace_binary():
-    url = f"https://github.com/{GITHUB_REPO}/releases/latest/download/anitr-cli"
+    url = f"https://github.com/{config.GITHUB_REPO}/releases/latest/download/anitr-cli"
     response = requests.get(url)
     temp_path = "/tmp/anitr-cli"
     
@@ -33,8 +31,8 @@ def download_and_replace_binary():
 def check_update_notice():
     try:
         latest = get_latest_version()
-        if version.parse(latest) > version.parse(CURRENT_VERSION):
-            notice = f"Yeni bir anitr-cli sürümü mevcut: {CURRENT_VERSION} → {latest}\n" \
+        if version.parse(latest) > version.parse(config.CURRENT_VERSION):
+            notice = f"Yeni bir anitr-cli sürümü mevcut: {config.CURRENT_VERSION} → {latest}\n" \
                      f"Güncellemek için şunu çalıştırın: anitr-cli --update"
             
             return notice
