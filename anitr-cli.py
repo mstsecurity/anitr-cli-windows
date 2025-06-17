@@ -1,142 +1,12 @@
 #!/usr/bin/env python3
 
 from modules.fetch import animecix, openanime
-from pypresence import Client
 import modules.player as player
 import modules.ui as ui
-
-from dotenv import load_dotenv
-import subprocess, argparse, time, json, sys, os, re
-
-load_dotenv(os.path.expanduser("~/.config/anitr-cli/config"))
-default_ui = os.getenv("DEFAULT_UI", "tui")
-discord_rpc = os.getenv("DISCORD_RPC", "Enabled")
-sources = ["AnimeciX (anm.cx)", "OpenAnime (openani.me)"]
-
-rpc = None
-start_time = int(time.time())
-
-def log_anime_details(details: str, state: str, large_text: str, source: str, source_url: str, path: str = "/tmp/anime_details"):
-    data = {
-        "details": f"Watching {details}",
-        "state": state,
-        "large_image": "anitrcli",
-        "large_text": large_text,
-        "small_image": source.lower(),
-        "small_text": source,
-        "buttons": [
-            { "label": source, "url": source_url },
-            { "label": "GitHub", "url": "https://github.com/xeyossr/anitr-cli" }
-        ]
-    }
-    
-    with open(path, "w", encoding="utf-8") as tmpf:
-        json.dump(data, tmpf, indent=2, ensure_ascii=False)
-
-def start_discord_rpc(client_id="1383421771159572600", filepath="/tmp/anime_details"):
-    global rpc
-    try:
-        if rpc is None:
-            rpc = Client(client_id)
-            rpc.start()
-    except Exception:
-        return
-
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except Exception as e:
-        print(f"Error reading file: {e}")
-        return
-
-    activity = {
-        "pid": os.getpid(),
-        "activity": {
-            "type": 3,
-            "details": data.get("details"),
-            "state": data.get("state"),
-            "timestamps": {
-                "start": start_time
-            },
-            "assets": {
-                "large_image": data.get("large_image"),
-                "large_text": data.get("large_text"),
-                "small_image": data.get("small_image"),
-                "small_text": data.get("small_text")
-            },
-            "buttons": data.get("buttons", [])
-        }
-    }
-
-    try:
-        rpc.send_data(1, {
-            "cmd": "SET_ACTIVITY",
-            "args": activity,
-            "nonce": "watching-anime"
-        })
-    except Exception:
-        pass
-
-
-def update_discord_rpc(filepath="/tmp/anime_details"):
-    global rpc
-    if rpc is None:
-        return
-
-    try:
-        with open(filepath, "r", encoding="utf-8") as f:
-            data = json.load(f)
-    except Exception as e:
-        print(f"Error reading file: {e}")
-        return
-
-    activity = {
-        "pid": os.getpid(),
-        "activity": {
-            "type": 3,
-            "details": data.get("details"),
-            "state": data.get("state"),
-            "timestamps": {
-                "start": start_time
-            },
-            "assets": {
-                "large_image": data.get("large_image"),
-                "large_text": data.get("large_text"),
-                "small_image": data.get("small_image"),
-                "small_text": data.get("small_text")
-            },
-            "buttons": data.get("buttons", [])
-        }
-    }
-
-    try:
-        rpc.send_data(1, {
-            "cmd": "SET_ACTIVITY",
-            "args": activity,
-            "nonce": "watching-anime"
-        })
-    except Exception:
-        pass
-
-def stop_discord_rpc():
-    global rpc
-    if rpc:
-        rpc.clear_activity()
-        rpc.close()
-        rpc = None
-
-def print_smart(text: str, notification_msg: str, notification: bool = True):
-    if default_ui == "rofi":
-        if notification:
-            send_notification("anitr-cli", notification_msg)
-    else:
-        print(text)
-
-def send_notification(title, message):
-    subprocess.run(['notify-send', '-a', title, message])
-
-def get_source() -> str:
-    return ui.select_menu(default_ui, sources, "Kaynak seç:", False)
+import modules.utils as utils
+import modules.config as config
+import modules.discord_rpc as rpc
+import argparse, sys, re, time
 
 def parse_arguments():
     parser = argparse.ArgumentParser(
@@ -182,7 +52,7 @@ def parse_arguments():
     return parser.parse_args()
 
 def AnimeciX():    
-    query = ui.search_menu(default_ui, "Anime ara >")
+    query = ui.search_menu(config.default_ui, "Anime ara >")
     
     if not query or query == "Çık":
         return
@@ -197,7 +67,7 @@ def AnimeciX():
         for item in anime_data
     ]
 
-    selected_anime_name = ui.select_menu(default_ui, anime_names, "Anime seç:", True)
+    selected_anime_name = ui.select_menu(config.default_ui, anime_names, "Anime seç:", True)
     if not selected_anime_name:
         return
 
@@ -234,8 +104,9 @@ def AnimeciX():
 
         try:
             data.sort(key=lambda x: int(x['label'][:-1]), reverse=True)
-        except Exception:
-            pass
+        except Exception as e:
+            utils.log_error(config.error_log, e)
+            utils.send_notification("anitr-cli", f"anitr-cli bir hatayla karşılaştı. Hata detayları: {config.error_log}", "critical")
 
         labels = [item['label'] for item in data]
         urls = [item['url'] for item in data]
@@ -257,8 +128,8 @@ def AnimeciX():
 
 
     anime_series_menu_options = (
-        ["Filmi izle", "Çözünürlük seç", "Anime ara", "Çık"] if is_movie else
-        ["İzle", "Sonraki bölüm", "Önceki bölüm", "Bölüm seç", "Çözünürlük seç", "Anime ara", "Çık"]
+        ["Filmi izle", "Çözünürlük seç", "Kaynak değiştir", "Anime ara", "Çık"] if is_movie else
+        ["İzle", "Sonraki bölüm", "Önceki bölüm", "Bölüm seç", "Çözünürlük seç", "Kaynak değiştir", "Anime ara", "Çık"]
     )
     
     while True:
@@ -280,9 +151,9 @@ def AnimeciX():
                 menu_header = (f"\033[33mOynatılıyor\033[0m: {selected_anime_name}"
                                if selected_anime_name else "")
 
-        print_smart(menu_header, "", False)
+        utils.smart_print(menu_header, "", False)
 
-        log_anime_details(
+        rpc.log_anime_details(
             details=f"{selected_anime_name}",
             state=f"{selected_episode_name} ({selected_episode_index + 1}/{total_episodes})" if not is_movie else f"{selected_anime_name}",
             large_text=f"{selected_anime_name}",
@@ -290,10 +161,10 @@ def AnimeciX():
             source_url="https://anm.cx"
         )
         
-        if discord_rpc.lower() == "enabled":
-            start_discord_rpc()
+        if config.discord_rpc.lower() == "enabled":
+            rpc.start_discord_rpc()
 
-        selected_option = ui.select_menu(default_ui, anime_series_menu_options, "", False, menu_header)
+        selected_option = ui.select_menu(config.default_ui, anime_series_menu_options, "", False, menu_header)
 
         if selected_option == "İzle" or selected_option == "Filmi izle":
             watch_api_data, watch_api_labels, watch_api_urls, subtitle_url = update_watch_api(selected_episode_index, selected_anime_id)
@@ -312,12 +183,12 @@ def AnimeciX():
                 selected_resolution_index -= 1
 
             if not is_movie:
-                print_smart(
+                utils.smart_print(
                     f"\033[33mOynatılıyor\033[0m: {selected_episode_name}", 
                     f"{selected_anime_name}, {selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor"
                 )
             elif is_movie:
-                print_smart(
+                utils.smart_print(
                     f"\033[33mOynatılıyor\033[0m: {selected_anime_name}", 
                     f"{selected_anime_name} oynatılıyor"
                 )
@@ -330,12 +201,12 @@ def AnimeciX():
 
         elif selected_option == "Sonraki bölüm":
             if selected_episode_index + 1 >= len(anime_episodes_data):
-                ui.show_error(default_ui, "Zaten son bölümdesiniz.")
+                ui.show_error(config.default_ui, "Zaten son bölümdesiniz.")
                 continue
             selected_episode_index += 1
             selected_episode_name = anime_episode_names[selected_episode_index]
 
-            log_anime_details(
+            rpc.log_anime_details(
                 details=f"{selected_anime_name}",
                 state=f"{selected_episode_name} ({selected_episode_index + 1}/{total_episodes})" if not is_movie else f"{selected_anime_name}",
                 large_text=f"{selected_anime_name}",
@@ -343,18 +214,18 @@ def AnimeciX():
                 source_url="https://anm.cx"
             )
 
-            update_discord_rpc()
+            rpc.update_discord_rpc()
 
             continue
 
         elif selected_option == "Önceki bölüm":
             if selected_episode_index == 0:
-                ui.show_error(default_ui, "Zaten ilk bölümdesiniz.")
+                ui.show_error(config.default_ui, "Zaten ilk bölümdesiniz.")
                 continue
             selected_episode_index -= 1
             selected_episode_name = anime_episode_names[selected_episode_index]
 
-            log_anime_details(
+            rpc.log_anime_details(
                 details=f"{selected_anime_name}",
                 state=f"{selected_episode_name} ({selected_episode_index + 1}/{total_episodes})" if not is_movie else f"{selected_anime_name}",
                 large_text=f"{selected_anime_name}",
@@ -362,12 +233,12 @@ def AnimeciX():
                 source_url="https://anm.cx"
             )
 
-            update_discord_rpc()
+            rpc.update_discord_rpc()
 
             continue
 
         elif selected_option == "Bölüm seç":
-            selected_episode_name = ui.select_menu(default_ui, anime_episode_names, "Bölüm seç:", True)
+            selected_episode_name = ui.select_menu(config.default_ui, anime_episode_names, "Bölüm seç:", True)
 
             if not selected_episode_name:
                 continue
@@ -375,7 +246,7 @@ def AnimeciX():
             selected_episode_index = anime_episode_names.index(selected_episode_name)
             selected_episode_name = anime_episode_names[selected_episode_index]
 
-            log_anime_details(
+            rpc.log_anime_details(
                 details=f"{selected_anime_name}",
                 state=f"{selected_episode_name} ({selected_episode_index + 1}/{total_episodes})" if not is_movie else f"{selected_anime_name}",
                 large_text=f"{selected_anime_name}",
@@ -383,19 +254,28 @@ def AnimeciX():
                 source_url="https://anm.cx"
             )
 
-            update_discord_rpc()
+            rpc.update_discord_rpc()
 
             continue
         
         elif selected_option == "Çözünürlük seç":
             watch_api_data, watch_api_labels, watch_api_urls, subtitle_url = update_watch_api(selected_episode_index, selected_anime_id)
-            selected_resolution = ui.select_menu(default_ui, watch_api_labels, "Çözünürlük seç:", False)
+            selected_resolution = ui.select_menu(config.default_ui, watch_api_labels, "Çözünürlük seç:", False)
 
             if not selected_resolution:
                 continue
 
             selected_resolution_index = watch_api_labels.index(selected_resolution)
         
+        elif selected_option == "Kaynak değiştir":
+            selected_source = utils.get_source(ui)
+            if selected_source == "AnimeciX (anm.cx)":
+                return AnimeciX()
+            elif selected_source == "OpenAnime (openani.me)":
+                return OpenAnime()
+            else:
+                return
+
         elif selected_option == "Anime ara":
             AnimeciX()
             continue
@@ -404,7 +284,7 @@ def AnimeciX():
             sys.exit()
 
 def OpenAnime():    
-    query = ui.search_menu(default_ui, "Anime ara >")
+    query = ui.search_menu(config.default_ui, "Anime ara >")
     if not query or query == "Çık":
         return
     
@@ -412,7 +292,7 @@ def OpenAnime():
     
     anime_names = [f'{item["name"]} (ID: {item["slug"]})' for item in search_data]
 
-    selected_anime_name = ui.select_menu(default_ui, anime_names, "Anime seç:", True)
+    selected_anime_name = ui.select_menu(config.default_ui, anime_names, "Anime seç:", True)
     
     if not selected_anime_name:
         return
@@ -445,7 +325,7 @@ def OpenAnime():
                 anime_episode_names.append(f"{season}. Sezon, {episode}. Bölüm")
 
     if not anime_episodes_data:
-        ui.show_error(default_ui, "Bu animeye ait bölüm bulunamadı.")
+        ui.show_error(config.default_ui, "Bu animeye ait bölüm bulunamadı.")
         return
 
     selected_episode_index = 0
@@ -454,8 +334,8 @@ def OpenAnime():
     
 
     anime_series_menu_options = (
-        ["Filmi izle", "Çözünürlük seç", "Anime ara", "Çık"] if is_movie else
-        ["İzle", "Sonraki bölüm", "Önceki bölüm", "Bölüm seç", "Çözünürlük seç", "Anime ara", "Çık"]
+        ["Filmi izle", "Çözünürlük seç", "Kaynak değiştir", "Anime ara", "Çık"] if is_movie else
+        ["İzle", "Sonraki bölüm", "Önceki bölüm", "Bölüm seç", "Çözünürlük seç", "Kaynak değiştir", "Anime ara", "Çık"]
     )
 
     def update_watch_api(index):
@@ -479,9 +359,9 @@ def OpenAnime():
                            f" {selected_episode_index + 1}/{total_episodes}"
                            if selected_anime_name else "")
 
-        print_smart(menu_header, "", False)
+        utils.smart_print(menu_header, "", False)
         
-        log_anime_details(
+        rpc.log_anime_details(
             details=f"{selected_anime_name}",
             state=f"{selected_episode_name} ({selected_episode_index + 1}/{total_episodes})" if not is_movie else f"{selected_anime_name}",
             large_text=f"{selected_anime_name}",
@@ -489,16 +369,16 @@ def OpenAnime():
             source_url="https://openani.me"
         )
         
-        if discord_rpc.lower() == "enabled":
-            start_discord_rpc()
+        if config.discord_rpc.lower() == "enabled":
+            rpc.start_discord_rpc()
         
-        selected_option = ui.select_menu(default_ui, anime_series_menu_options, "", False, menu_header)
+        selected_option = ui.select_menu(config.default_ui, anime_series_menu_options, "", False, menu_header)
 
         if selected_option in ["İzle", "Filmi izle"]:
             watch_api_data, watch_api_labels, watch_api_urls = update_watch_api(selected_episode_index)
 
             if not watch_api_labels:
-                ui.show_error(default_ui, "Çözünürlük verisi alınamadı.")
+                ui.show_error(config.default_ui, "Çözünürlük verisi alınamadı.")
                 continue
 
             if selected_resolution is None:
@@ -511,7 +391,7 @@ def OpenAnime():
             while selected_resolution_index >= len(watch_api_urls):
                 selected_resolution_index -= 1
 
-            print_smart(
+            utils.smart_print(
                 f"\033[33mOynatılıyor\033[0m: {selected_episode_name}",
                 f"{selected_anime_name}, {selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor"
             )
@@ -525,71 +405,80 @@ def OpenAnime():
 
         elif selected_option == "Sonraki bölüm":
             if selected_episode_index + 1 >= len(anime_episodes_data):
-                ui.show_error(default_ui, "Zaten son bölümdesiniz.")
+                ui.show_error(config.default_ui, "Zaten son bölümdesiniz.")
                 continue
             selected_episode_index += 1
             selected_episode_name = anime_episode_names[selected_episode_index]
 
-            log_anime_details(
+            rpc.log_anime_details(
                 details=f"{selected_anime_name}",
                 state=f"{selected_episode_name} ({selected_episode_index + 1}/{total_episodes})" if not is_movie else f"{selected_anime_name}",
                 large_text=f"{selected_anime_name}",
-                source="AnimeciX",
-                source_url="https://anm.cx"
+                source="OpenAnime",
+                source_url="https://openani.me"
             )
 
-            update_discord_rpc()
+            rpc.update_discord_rpc()
 
             continue
 
         elif selected_option == "Önceki bölüm":
             if selected_episode_index == 0:
-                ui.show_error(default_ui, "Zaten ilk bölümdesiniz.")
+                ui.show_error(config.default_ui, "Zaten ilk bölümdesiniz.")
                 continue
             selected_episode_index -= 1
             selected_episode_name = anime_episode_names[selected_episode_index]
 
-            log_anime_details(
+            rpc.log_anime_details(
                 details=f"{selected_anime_name}",
                 state=f"{selected_episode_name} ({selected_episode_index + 1}/{total_episodes})" if not is_movie else f"{selected_anime_name}",
                 large_text=f"{selected_anime_name}",
-                source="AnimeciX",
-                source_url="https://anm.cx"
+                source="OpenAnime",
+                source_url="https://openani.me"
             )
 
-            update_discord_rpc()
+            rpc.update_discord_rpc()
 
             continue
 
         elif selected_option == "Bölüm seç":
-            selected_episode_name = ui.select_menu(default_ui, anime_episode_names, "Bölüm seç:", True)
+            selected_episode_name = ui.select_menu(config.default_ui, anime_episode_names, "Bölüm seç:", True)
 
             if not selected_episode_name:
                 continue
 
             selected_episode_index = anime_episode_names.index(selected_episode_name)
 
-            log_anime_details(
+            rpc.log_anime_details(
                 details=f"{selected_anime_name}",
                 state=f"{selected_episode_name} ({selected_episode_index + 1}/{total_episodes})" if not is_movie else f"{selected_anime_name}",
                 large_text=f"{selected_anime_name}",
-                source="AnimeciX",
-                source_url="https://anm.cx"
+                source="OpenAnime",
+                source_url="https://openani.me"
             )
 
-            update_discord_rpc()
+            rpc.update_discord_rpc()
 
             continue
 
         elif selected_option == "Çözünürlük seç":
             watch_api_data, watch_api_labels, watch_api_urls = update_watch_api(selected_episode_index)
-            selected_resolution = ui.select_menu(default_ui, watch_api_labels, "Çözünürlük seç:", False)
+            selected_resolution = ui.select_menu(config.default_ui, watch_api_labels, "Çözünürlük seç:", False)
 
             if not selected_resolution:
                 continue
 
             selected_resolution_index = watch_api_labels.index(selected_resolution)
         
+        elif selected_option == "Kaynak değiştir":
+            selected_source = utils.get_source(ui)
+            if selected_source == "AnimeciX (anm.cx)":
+                return AnimeciX()
+            elif selected_source == "OpenAnime (openani.me)":
+                return OpenAnime()
+            else:
+                return
+            
         elif selected_option == "Anime ara":
             OpenAnime()
             continue
@@ -599,32 +488,29 @@ def OpenAnime():
 
 def main():
     import modules.update as update
-    
-    global default_ui
     args = parse_arguments()
 
     if not args.update:
         if update.check_update_notice():
-            send_notification("anitr-cli", update.check_update_notice())
+            utils.send_notification("anitr-cli", update.check_update_notice())
     
     if args.rofi:
-        default_ui = "rofi"
+        config.default_ui = "rofi"
     elif args.tui:
-        default_ui = "tui"
+        config.default_ui = "tui"
     elif args.update:
         from packaging import version
 
         latest = update.get_latest_version()
-        if version.parse(latest) > version.parse(update.CURRENT_VERSION):
-            print(f"Yeni sürüm bulundu: \033[31mv{update.CURRENT_VERSION}\033[0m → \033[32mv{latest}\033[0m")
+        if version.parse(latest) > version.parse(config.CURRENT_VERSION):
+            print(f"Yeni sürüm bulundu: \033[31mv{config.CURRENT_VERSION}\033[0m → \033[32mv{latest}\033[0m")
             update.download_and_replace_binary()
         else:
             print("Zaten en güncel sürümdesiniz.")
         sys.exit()
     
     if args.disable_rpc:
-        global discord_rpc
-        discord_rpc = "Disabled"
+        config.discord_rpc = "Disabled"
 
     if args.source:
         if args.source.lower() == "openanime":
@@ -632,10 +518,10 @@ def main():
         elif args.source.lower() == "animecix":
             AnimeciX()
         else:
-            print(f"\033[32m[!] - Geçersiz kaynak\033[0m")
+            print(f"\033[31m[!] - Geçersiz kaynak\033[0m")
             sys.exit(1)
 
-    selected_source = get_source()
+    selected_source = utils.get_source(ui)
     if selected_source == "AnimeciX (anm.cx)":
         AnimeciX()
     elif selected_source == "OpenAnime (openani.me)":
