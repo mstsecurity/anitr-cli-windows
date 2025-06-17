@@ -12,21 +12,26 @@ def get_latest_version():
     return tag.lstrip("v")  # "vx.x.x" → "x.x.x"
 
 def download_and_replace_binary():
-    url = f"https://github.com/{config.GITHUB_REPO}/releases/latest/download/anitr-cli"
-    response = requests.get(url)
-    temp_path = "/tmp/anitr-cli"
-    
+    url = f"https://raw.githubusercontent.com/{config.GITHUB_REPO}/main/update-anitr-cli.sh"
+    temp_path = "/tmp/update-anitr-cli.sh"
+
+    try:
+        response = requests.get(url)
+        response.raise_for_status()
+    except Exception as e:
+        print(f"Hata: update script indirilemedi → {e}")
+        return
+
     with open(temp_path, "wb") as f:
         f.write(response.content)
 
     subprocess.run(["chmod", "+x", temp_path], check=True)
 
-    if os.geteuid() != 0:
-        subprocess.run(["sudo", "cp", temp_path, "/usr/bin/anitr-cli"], check=True)
-    else:
-        shutil.copy(temp_path, "/usr/bin/anitr-cli")
+    print("📦 Güncelleme başlatılıyor...")
 
-    print("✅ anitr-cli başarıyla güncellendi.")
+    # Python işlemini sonlandır ve update scriptini çalıştır
+    os.execv(temp_path, [temp_path])
+
 
 def check_update_notice():
     try:
