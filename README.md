@@ -24,7 +24,9 @@ yay -S anitr-cli
 Eğer Arch tabanlı olmayan bir dağıtım kullanıyorsanız projeyi [releases](https://github.com/xeyossr/anitr-cli/releases) sayfasından kurabilirsiniz.
 
 ```bash
-sudo curl -sL "$(curl -s https://api.github.com/repos/xeyossr/anitr-cli/releases/latest | grep browser_download_url | grep 'anitr-cli' | cut -d '"' -f 4)" -o /usr/bin/anitr-cli && sudo chmod +x /usr/bin/anitr-cli
+curl -L -o /tmp/anitr-cli https://github.com/xeyossr/anitr-cli/releases/latest/download/anitr-cli
+chmod +x /tmp/anitr-cli
+sudo mv /tmp/anitr-cli /usr/bin/anitr-cli
 ```
 
 [Releases](https://github.com/xeyossr/anitr-cli/releases) sayfasından anitr-cli'yi indirdikten sonra, her çalıştırdığınızda yeni bir güncelleme olup olmadığı denetlenecektir. Eğer güncelleme mevcutsa, `anitr-cli --update` komutuyla güncelleyebilirsiniz. Ancak anitr-cli'yi [AUR](https://aur.archlinux.org/packages/anitr-cli) üzerinden kurduysanız, güncelleme için `yay -Sy anitr-cli` komutunu kullanmanız önerilir.
