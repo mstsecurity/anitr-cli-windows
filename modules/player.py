@@ -1,5 +1,5 @@
 import subprocess, time
-
+import config, utils
 def open_with_video_player(url, subtitle_url=None):
     """Video Oynatıcı"""
     try:
@@ -16,5 +16,6 @@ def open_with_video_player(url, subtitle_url=None):
 
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
     except subprocess.CalledProcessError as e:
-        print("Oynatılırken Hata Oluştu!", e)
+        utils.send_notification("anitr-cli", f"anitr-cli bir hatayla karşılaştı. Hata detayları: {config.error_log}", "critical")
+        utils.log_error(config.log_error, e)
         time.sleep(10)
