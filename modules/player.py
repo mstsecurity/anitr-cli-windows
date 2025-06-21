@@ -1,5 +1,5 @@
 import subprocess, time
-import config, utils
+from . import config, utils
 def open_with_video_player(url, subtitle_url=None):
     """Video Oynatıcı"""
     try:

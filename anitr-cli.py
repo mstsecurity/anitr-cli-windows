@@ -194,7 +194,12 @@ def AnimeciX():
                 )
 
             selected_season_index = anime_episodes_data[selected_episode_index]["season_num"] - 1 if not is_movie else 0
-            watch_url = watch_api_urls[selected_resolution_index]
+            try:
+                watch_url = watch_api_urls[selected_resolution_index]
+            except IndexError as e:
+                utils.log_error(config.log_error, e)
+                utils.show_notification("anitr-cli", f"anitr-cli bir hatayla karşılaştı. Hata detayları: {config.log_error}", "critical")
+                continue
 
             player.open_with_video_player(watch_url, subtitle_url)
             continue
@@ -289,8 +294,15 @@ def OpenAnime():
         return
     
     search_data = openanime().search(query)
-    
-    anime_names = [f'{item["name"]} (ID: {item["slug"]})' for item in search_data]
+
+    if not search_data:
+        ui.show_error(config.default_ui, "Arama sonucu bulunamadı.")
+        return
+        
+    anime_names = []
+    for item in search_data:
+        if "name" in item and "slug" in item:
+            anime_names.append(f'{item["name"]} (ID: {item["slug"]})')
 
     selected_anime_name = ui.select_menu(config.default_ui, anime_names, "Anime seç:", True)
     
