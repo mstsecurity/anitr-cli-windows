@@ -23,4 +23,4 @@ config_path = os.path.expanduser("~/.config/anitr-cli/config")
 github_repo = "https://github.com/xeyossr/anitr-cli"
 
 GITHUB_REPO = "xeyossr/anitr-cli"
-CURRENT_VERSION = "3.4.1"
+CURRENT_VERSION = "3.5.0"
