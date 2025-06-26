@@ -5,11 +5,12 @@ from pypresence import Client
 from . import config
 from . import utils
 
-def log_anime_details(details: str, state: str, large_text: str, source: str, source_url: str, path=config.anime_details):
+
+def log_anime_details(details: str, state: str, large_image: str, large_text: str, source: str, source_url: str, path=config.anime_details):
     data = {
         "details": f"Watching {details}",
         "state": state,
-        "large_image": "anitrcli",
+        "large_image": large_image,
         "large_text": large_text,
         "small_image": source.lower(),
         "small_text": source,
@@ -21,11 +22,12 @@ def log_anime_details(details: str, state: str, large_text: str, source: str, so
     with open(path, "w", encoding="utf-8") as tmpf:
         json.dump(data, tmpf, indent=2, ensure_ascii=False)
 
+
 def start_discord_rpc(client_id=config.discord_client_id, filepath=config.anime_details):
     if config.rpc_initialized:
         update_discord_rpc(filepath)
         return
-    
+
     try:
         if config.rpc is None:
             config.rpc = Client(client_id)
@@ -72,6 +74,7 @@ def start_discord_rpc(client_id=config.discord_client_id, filepath=config.anime_
     except Exception as e:
         utils.log_error(config.error_log, e)
 
+
 def update_discord_rpc(filepath=config.anime_details):
     if not config.rpc_initialized:
         start_discord_rpc()
@@ -116,6 +119,7 @@ def update_discord_rpc(filepath=config.anime_details):
         })
     except Exception as e:
         utils.log_error(config.error_log, e)
+
 
 def stop_discord_rpc():
     if config.rpc:
