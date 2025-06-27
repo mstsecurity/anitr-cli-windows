@@ -9,8 +9,8 @@ import modules.discord_rpc as rpc
 import argparse
 import sys
 import re
-import time
 import requests
+import os
 
 
 def parse_arguments():
@@ -64,6 +64,34 @@ def is_valid_image_url(url):
         return response.status_code == 200 and "image" in content_type
     except requests.RequestException:
         return False
+
+
+def save_image_from_url(url, selected_anime_name):
+    if not is_valid_image_url(url):
+        return None
+
+    # Dosya adı için anime adını küçült ve boşlukları - yap
+    safe_name = selected_anime_name.lower().replace(" ", "-")
+
+    # URL'den uzantıyı al (örn: .jpg)
+    try:
+        _, ext = os.path.splitext(url)
+
+    except Exception as e:
+        utils.log_error(config.error_log, e)
+
+    file_path = f"/tmp/{safe_name}{ext}"
+
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+
+        with open(file_path, "wb") as f:
+            f.write(response.content)
+
+        return file_path
+    except requests.RequestException:
+        return None
 
 
 def AnimeciX():
@@ -173,7 +201,8 @@ def AnimeciX():
                 menu_header = (f"\033[33mOynatılıyor\033[0m: {selected_anime_name}"
                                if selected_anime_name else "")
 
-        utils.smart_print(menu_header, "", False)
+        utils.smart_print(menu_header, "", False, icon=save_image_from_url(
+            poster_url, selected_anime_name))
 
         rpc.log_anime_details(
             details=f"{selected_anime_name}",
@@ -212,12 +241,13 @@ def AnimeciX():
                 utils.smart_print(
                     f"\033[33mOynatılıyor\033[0m: {selected_episode_name}",
                     f"{selected_anime_name}, {
-                        selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor"
+                        selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor", icon=save_image_from_url(poster_url, selected_anime_name)
                 )
+
             elif is_movie:
                 utils.smart_print(
                     f"\033[33mOynatılıyor\033[0m: {selected_anime_name}",
-                    f"{selected_anime_name} oynatılıyor"
+                    f"{selected_anime_name} oynatılıyor", icon=save_image_from_url(poster_url, selected_anime_name)
                 )
 
             selected_season_index = anime_episodes_data[selected_episode_index]["season_num"] - \
@@ -419,7 +449,8 @@ def OpenAnime():
                            f" {selected_episode_index + 1}/{total_episodes}"
                            if selected_anime_name else "")
 
-        utils.smart_print(menu_header, "", False)
+        utils.smart_print(menu_header, "", False, icon=save_image_from_url(
+            poster_url, selected_anime_name))
 
         rpc.log_anime_details(
             details=f"{selected_anime_name}",
@@ -459,7 +490,7 @@ def OpenAnime():
             utils.smart_print(
                 f"\033[33mOynatılıyor\033[0m: {selected_episode_name}",
                 f"{selected_anime_name}, {
-                    selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor"
+                    selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor", icon=save_image_from_url(poster_url, selected_anime_name)
             )
 
             raw_video_url = watch_api_urls[selected_resolution_index]
