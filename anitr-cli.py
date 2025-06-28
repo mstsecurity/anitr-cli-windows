@@ -240,8 +240,7 @@ def AnimeciX():
             if not is_movie:
                 utils.smart_print(
                     f"\033[33mOynatılıyor\033[0m: {selected_episode_name}",
-                    f"{selected_anime_name}, {
-                        selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor", icon=save_image_from_url(poster_url, selected_anime_name)
+                    f"{selected_anime_name}, {selected_episode_name} ({selected_episode_index+1}/{total_episodes}) oynatılıyor", icon=save_image_from_url(poster_url, selected_anime_name)
                 )
 
             elif is_movie:
@@ -260,7 +259,9 @@ def AnimeciX():
                     "anitr-cli", f"anitr-cli bir hatayla karşılaştı. Hata detayları: {config.log_error}", "critical")
                 continue
 
-            player.open_with_video_player(watch_url, subtitle_url)
+            player.open_with_video_player(
+                watch_url, subtitle_url, save_position_on_quit=config.save_position_on_quit
+            )
             continue
 
         elif selected_option == "Sonraki bölüm":
@@ -498,7 +499,9 @@ def OpenAnime():
             watch_url = f"{
                 openanime().player}/animes/{selected_anime_slug}/{season_for_url}/{raw_video_url}"
             subtitle_url = None
-            player.open_with_video_player(watch_url, subtitle_url)
+            player.open_with_video_player(
+                watch_url, subtitle_url, save_position_on_quit=config.save_position_on_quit
+            )
             continue
 
         elif selected_option == "Sonraki bölüm":
