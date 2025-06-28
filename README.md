@@ -2,7 +2,7 @@
   <h1>Önizleme</h1>
 </div>
 
-[preview.mp4](https://github.com/user-attachments/assets/a5806047-91d5-407b-a25b-6cae75f9355e)
+[preview.mp4](https://github.com/user-attachments/assets/199d940e-14c6-468c-9120-496185ab2217)
 
 <p>
   <img src="assets/discord_rpc_preview.png"/>
@@ -54,16 +54,18 @@ options:
 Aşağıdaki ortam değişkenleri ile uygulamanın davranışını özelleştirebilirsiniz:
 
 ```ini
-ROFI_FLAGS=-i -width 50
-ROFI_THEME=/path/to/theme.rasi
-DEFAULT_UI=rofi
-DISCORD_RPC=Enabled
+rofi_flags=-i -width 50
+rofi_theme=/path/to/theme.rasi
+default_ui=rofi
+discord_rpc=Enabled
+save_position_on_quit=True
 ```
 
 `ROFI_FLAGS` — Rofi modunda çalıştırırken ek parametreler eklemek için kullanılır.  
 `ROFI_THEME` — Rofi arayüzü için özel bir tema belirtmek için kullanılır.  
 `DEFAULT_UI` — Uygulamanın varsayılan arayüzünü belirler. `rofi` veya `tui` olarak ayarlanabilir.  
 `DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.
+`SAVE_POSITION_ON_QUIT` - Bir bölümü yarıda bıraksanız bile, MPV kaldığınız saniyeyi hatırlar ve bir sonraki açışınızda tam oradan başlatır.
 
 ## Sorunlar
 
