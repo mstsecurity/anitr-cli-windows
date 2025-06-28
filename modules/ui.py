@@ -1,14 +1,15 @@
 from dotenv import load_dotenv
 import modules.rofi_ui as rofi
 import modules.tui_ui as tui
+import modules.utils as utils
 import os
 
 load_dotenv(os.path.expanduser("~/.config/anitr-cli/config"))
 
 def parse_config_file():
     """~/.config/anitr-cli/config içinden gerekli ayarları alan funksiyon"""
-    flags_str = os.getenv("ROFI_FLAGS", "")
-    theme_from_config = os.getenv("ROFI_THEME")
+    flags_str = utils.get_env("rofi_flags","ROFI_FLAGS", default="")
+    theme_from_config = utils.get_env("rofi_theme","ROFI_THEME", default="")
     flags = flags_str.split()
     return flags, theme_from_config
 
