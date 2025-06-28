@@ -1,6 +1,9 @@
-import subprocess, time
+import subprocess
+import time
 from . import config, utils
-def open_with_video_player(url, subtitle_url=None):
+
+
+def open_with_video_player(url, subtitle_url=None, save_position_on_quit=False):
     """Video Oynatıcı"""
     try:
         cmd = [
@@ -10,12 +13,16 @@ def open_with_video_player(url, subtitle_url=None):
             '--referrer=https://yeshi.eu.org/'
         ]
 
+        if save_position_on_quit:
+            cmd += ['--save-position-on-quit']
+
         if subtitle_url:
             cmd += ['--sub-file=' + subtitle_url]
         cmd.append(url)
 
         subprocess.run(cmd, check=True, stdout=subprocess.DEVNULL)
     except subprocess.CalledProcessError as e:
-        utils.send_notification("anitr-cli", f"anitr-cli bir hatayla karşılaştı. Hata detayları: {config.error_log}", "critical")
+        utils.send_notification(
+            "anitr-cli", f"anitr-cli bir hatayla karşılaştı. Hata detayları: {config.error_log}", "critical")
         utils.log_error(config.log_error, e)
         time.sleep(10)
