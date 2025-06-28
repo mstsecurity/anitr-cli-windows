@@ -1,11 +1,14 @@
 import os
 import time
 from dotenv import load_dotenv
-
+import modules.utils as utils
 load_dotenv(os.path.expanduser("~/.config/anitr-cli/config"))
 
-default_ui = os.getenv("DEFAULT_UI", "tui")  # Default UI
-discord_rpc = os.getenv("DISCORD_RPC", "Enabled")  # RPC açık mı kapalı mı?
+default_ui = utils.get_env("default_ui", "DEFAULT_UI", default="tui")
+discord_rpc = utils.get_env("discord_rpc", "DISCORD_RPC", default="enabled")
+save_position_on_quit = utils.get_bool_env(
+    "save_position_on_quit", "SAVE_POSITION_ON_QUIT", default="false")
+
 sources = ["AnimeciX (anm.cx)", "OpenAnime (openani.me)"]  # Kaynaklar
 
 # Global Discord RPC durumu ve zaman
@@ -23,4 +26,4 @@ config_path = os.path.expanduser("~/.config/anitr-cli/config")
 github_repo = "https://github.com/xeyossr/anitr-cli"
 
 GITHUB_REPO = "xeyossr/anitr-cli"
-CURRENT_VERSION = "3.5.1"
+CURRENT_VERSION = "3.6.0"
