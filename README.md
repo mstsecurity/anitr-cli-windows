@@ -64,7 +64,7 @@ save_position_on_quit=True
 `ROFI_FLAGS` — Rofi modunda çalıştırırken ek parametreler eklemek için kullanılır.  
 `ROFI_THEME` — Rofi arayüzü için özel bir tema belirtmek için kullanılır.  
 `DEFAULT_UI` — Uygulamanın varsayılan arayüzünü belirler. `rofi` veya `tui` olarak ayarlanabilir.  
-`DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.
+`DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.  
 `SAVE_POSITION_ON_QUIT` - Bir bölümü yarıda bıraksanız bile, MPV kaldığınız saniyeyi hatırlar ve bir sonraki açışınızda tam oradan başlatır.
 
 ## Sorunlar
