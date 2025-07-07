@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-#!/usr/bin/env python3
-
 from modules.fetch import animecix, openanime
 import modules.player as player
 import modules.ui as ui
