@@ -10,6 +10,9 @@ except ImportError:
     _WINDOWS_NOTIFICATIONS_AVAILABLE = False
 
 
+import modules.config as config
+
+
 def get_env(*keys, default=None):
     for key in keys:
         val = os.getenv(key)
@@ -39,4 +42,6 @@ def smart_print(text: str, notification_msg: str, notification: bool = True, ico
     print(text)
 
 def get_source(ui_module):
+    
     return ui_module.select_menu("tui", config.sources, "Kaynak seç:", False)
+
