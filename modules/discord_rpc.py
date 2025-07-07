@@ -1,5 +1,6 @@
 import os
 import json
+import time
 
 from pypresence import Client
 from . import config
@@ -91,21 +92,22 @@ def update_discord_rpc(filepath=config.anime_details):
             data = json.load(f)
     except Exception as e:
         utils.log_error(config.error_log, e)
+        data = {}
 
     activity = {
         "pid": os.getpid(),
         "activity": {
             "type": 3,
-            "details": data.get("details"),
-            "state": data.get("state"),
+            "details": data.get("details", "Anime İzleniyor"),
+            "state": data.get("state", "Bölüm Yükleniyor..."),
             "timestamps": {
                 "start": config.start_time
             },
             "assets": {
-                "large_image": data.get("large_image"),
-                "large_text": data.get("large_text"),
-                "small_image": data.get("small_image"),
-                "small_text": data.get("small_text")
+                "large_image": data.get("large_image", "anitrcli"),
+                "large_text": data.get("large_text", "Anitr-CLI"),
+                "small_image": data.get("small_image", "default_source"),
+                "small_text": data.get("small_text", "Kaynak")
             },
             "buttons": data.get("buttons", [])
         }
@@ -123,6 +125,10 @@ def update_discord_rpc(filepath=config.anime_details):
 
 def stop_discord_rpc():
     if config.rpc:
-        config.rpc.clear_activity()
-        config.rpc.close()
+        try:
+            config.rpc.clear_activity()
+            config.rpc.close()
+        except Exception as e:
+            utils.log_error(config.error_log, e)
         config.rpc = None
+
