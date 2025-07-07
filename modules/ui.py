@@ -25,7 +25,7 @@ def select_menu(ui_type: str, choices: list, message: str = "Bir seçenek seçin
         
     question = [
         {
-            "type": Type,
+            "type": Type, # BURADAKİ 'Type' parametresi string olmalı
             "name": "selection",
             "message": message,
             "choices": choices,
@@ -44,3 +44,4 @@ def search_menu(ui_type: str, message: str = "Bir şey yazın:") -> str:
         validate=not_empty_validator
     ).execute()
     return result
+
