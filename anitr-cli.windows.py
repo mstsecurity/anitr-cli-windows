@@ -92,7 +92,7 @@ def save_image_from_url(url, selected_anime_name):
 
 
 def AnimeciX():
-    query = ui.search_menu(config.default_ui, "Anime ara >")
+    query = ui.search_menu(config.default_ui, "Anime ara ama 31 çekmek için değil bizede günah geçer >")
 
     if not query or query == "Çık":
         return
@@ -101,7 +101,7 @@ def AnimeciX():
 
     # YENİ EKLENEN KONTROL: Eğer arama sonucu boşsa
     if not search_data:
-        ui.show_error(config.default_ui, "Arama sonucu bulunamadı.")
+        ui.show_error(config.default_ui, "kral bulamadık ya kusura bakma tekrar ara")
         return
 
     anime_data = [{"name": item["name"], "id": item["id"], "title_type": item.get(
@@ -269,7 +269,7 @@ def AnimeciX():
                 utils.log_error(config.error_log,
                                 f"Video URL'si alınırken çözünürlük indeksi hatası: {e}")
                 utils.show_notification(
-                    "anitr-cli", f"anitr-cli bir hatayla karşılaştı. Hata detayları: {config.error_log}", "critical")
+                    "anitr-cli-windows", f"anitr-cli bir hatayla karşılaştı. Hata detayları: {config.error_log}", "critical")
                 continue
 
             player.open_with_video_player(
