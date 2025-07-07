@@ -9,6 +9,7 @@ try:
 except ImportError:
     _WINDOWS_NOTIFICATIONS_AVAILABLE = False
 
+
 import modules.config as config
 
 
@@ -41,5 +42,7 @@ def smart_print(text: str, notification_msg: str, notification: bool = True, ico
     print(text)
 
 def get_source(ui_module):
+    
     return ui_module.select_menu("tui", config.sources, "Kaynak seç:", False)
+
 
