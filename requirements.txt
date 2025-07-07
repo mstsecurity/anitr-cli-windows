@@ -1,5 +1,6 @@
 requests
+python-dotenv
 InquirerPy
-dotenv
-packaging
 pypresence
+packaging
+win10toast
