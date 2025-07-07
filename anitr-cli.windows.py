@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+#!/usr/bin/env python3
+
 from modules.fetch import animecix, openanime
 import modules.player as player
 import modules.ui as ui
@@ -107,7 +109,7 @@ def AnimeciX():
     ]
 
     selected_anime_name = ui.select_menu(
-        config.default_ui, anime_names, "Anime seç:", True)
+        config.default_ui, anime_names, "Anime seç:", Type="fuzzy")
     if not selected_anime_name:
         return
 
@@ -151,7 +153,7 @@ def AnimeciX():
                 selected_season_index, selected_episode_index, selected_id)
 
         try:
-            data.sort(key=lambda x: int(x['label'][:-1]), reverse=True)
+            data.sort(key=lambda x: int(re.sub(r'\D', '', x['label'])))
         except Exception as e:
             utils.log_error(config.error_log, f"Çözünürlük verileri sıralanırken hata: {e}")
             utils.show_notification(
@@ -219,7 +221,7 @@ def AnimeciX():
             rpc.start_discord_rpc()
 
         selected_option = ui.select_menu(
-            config.default_ui, anime_series_menu_options, "", False, menu_header)
+            config.default_ui, anime_series_menu_options, "", Type="list", header=menu_header)
 
         if selected_option == "İzle" or selected_option == "Filmi izle":
             watch_api_data, watch_api_labels, watch_api_urls, subtitle_url = update_watch_api(
@@ -325,15 +327,13 @@ def AnimeciX():
                 ui.show_error(config.default_ui, "Film izliyorsunuz, bölüm seçme yok.")
                 continue
             selected_episode_name_from_menu = ui.select_menu(
-                config.default_ui, anime_episode_names, "Bölüm seç:", True)
+                config.default_ui, anime_episode_names, "Bölüm seç:", Type="fuzzy")
 
             if not selected_episode_name_from_menu:
                 continue
 
             selected_episode_index = anime_episode_names.index(
                 selected_episode_name_from_menu)
-            selected_episode_name = anime_episode_names[selected_episode_index]
-            selected_season_index = anime_episodes_data[selected_episode_index]["season_num"] - 1
 
             if config.discord_rpc.lower() == "enabled":
                 rpc.log_anime_details(
@@ -350,15 +350,15 @@ def AnimeciX():
             continue
 
         elif selected_option == "Çözünürlük seç":
-            watch_api_data, watch_api_labels, watch_api_urls, subtitle_url = update_watch_api(
-                selected_episode_index, selected_anime_id)
+            watch_api_data, watch_api_labels, watch_api_urls = update_watch_api(
+                selected_episode_index)
             
             if not watch_api_labels:
                 ui.show_error(config.default_ui, "Çözünürlük verisi alınamadı.")
                 continue
 
             selected_resolution = ui.select_menu(
-                config.default_ui, watch_api_labels, "Çözünürlük seç:", False)
+                config.default_ui, watch_api_labels, "Çözünürlük seç:", Type="list")
 
             if not selected_resolution:
                 continue
@@ -400,7 +400,7 @@ def OpenAnime():
             anime_names.append(f'{item["name"]} (ID: {item["slug"]})')
 
     selected_anime_name = ui.select_menu(
-        config.default_ui, anime_names, "Anime seç:", True)
+        config.default_ui, anime_names, "Anime seç:", Type="fuzzy")
 
     selected_anime_index = anime_names.index(selected_anime_name)
     poster_url = search_data[selected_anime_index].get('poster')
@@ -496,7 +496,7 @@ def OpenAnime():
             rpc.start_discord_rpc()
 
         selected_option = ui.select_menu(
-            config.default_ui, anime_series_menu_options, "", False, menu_header)
+            config.default_ui, anime_series_menu_options, "", Type="list", header=menu_header)
 
         if selected_option in ["İzle", "Filmi izle"]:
             watch_api_data, watch_api_labels, watch_api_urls = update_watch_api(
@@ -590,7 +590,7 @@ def OpenAnime():
                 ui.show_error(config.default_ui, "Film izliyorsunuz, bölüm seçme yok.")
                 continue
             selected_episode_name_from_menu = ui.select_menu(
-                config.default_ui, anime_episode_names, "Bölüm seç:", True)
+                config.default_ui, anime_episode_names, "Bölüm seç:", Type="fuzzy")
 
             if not selected_episode_name_from_menu:
                 continue
@@ -621,7 +621,7 @@ def OpenAnime():
                 continue
 
             selected_resolution = ui.select_menu(
-                config.default_ui, watch_api_labels, "Çözünürlük seç:", False)
+                config.default_ui, watch_api_labels, "Çözünürlük seç:", Type="list")
 
             if not selected_resolution:
                 continue
