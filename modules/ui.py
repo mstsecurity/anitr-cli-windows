@@ -1,43 +1,46 @@
-from dotenv import load_dotenv
-import modules.rofi_ui as rofi
-import modules.tui_ui as tui
-import modules.utils as utils
+from InquirerPy import inquirer, prompt
+from InquirerPy.validator import ValidationError
 import os
+import time
 
-load_dotenv(os.path.expanduser("~/.config/anitr-cli/config"))
+def clear_screen():
+    os.system("cls" if os.name == "nt" else "clear")
 
-def parse_config_file():
-    """~/.config/anitr-cli/config içinden gerekli ayarları alan funksiyon"""
-    flags_str = utils.get_env("rofi_flags","ROFI_FLAGS", default="")
-    theme_from_config = utils.get_env("rofi_theme","ROFI_THEME", default="")
-    flags = flags_str.split()
-    return flags, theme_from_config
+def show_error(ui_type: str, msg: str, sleep_duration: float = 3):
+    print(f"\033[91m[!] - {msg}\033[0m")
+    time.sleep(sleep_duration)
 
-rofi_flags, rofi_theme = parse_config_file()
+def not_empty_validator(val):
+    if len(val.strip()) == 0:
+        raise ValidationError(message="Boş bırakılamaz.")
+    return True
 
-def search_menu(type: str, msg: str = "Anime Ara") -> str:
-    if type.lower() == "tui":
-        return tui.get_input_from_user(msg)
-    elif type.lower() == "rofi":
-        return rofi.get_input_from_rofi(["Çık"], msg, rofi_theme, rofi_flags)
-    else:
-        raise ValueError(f"Unsupported type: {type}")
+def validation_error(msg: str):
+    raise ValidationError(message=msg)
 
-def select_menu(type: str, choices: list[str], msg: str, tui_menu_with_search_input: bool = True, header=None) -> str:
-    if type.lower() == "tui":
-        if tui_menu_with_search_input == True:
-            return tui.get_selection_from_list(choices, msg, "fuzzy", header)
-        elif tui_menu_with_search_input == False:
-            return tui.get_selection_from_list(choices, msg, "list", header)
-    elif type.lower() == "rofi":
-        return rofi.get_input_from_rofi(choices, msg, rofi_theme, rofi_flags)
-    else:
-        raise ValueError(f"Unsupported type: {type}")
+def select_menu(ui_type: str, choices: list, message: str = "Bir seçenek seçin:", Type: str = "fuzzy", header=None) -> str:
+    clear_screen()
+    if header:
+        print(header)
+        
+    question = [
+        {
+            "type": Type,
+            "name": "selection",
+            "message": message,
+            "choices": choices,
+            "border": True,
+            "cycle": True,
+            "max_height": "70%",
+        }
+    ]
+    result = prompt(question)
+    return result.get("selection", "")
 
-def show_error(type: str, msg: str):
-    if type.lower() == "tui":
-        tui.show_error(msg, 0.8)
-    elif type.lower() == "rofi":
-        print(f"\033[91m[!] - {msg}\033[0m")  # kırmızı renkte
-    else:
-        raise ValueError(f"Unsupported type: {type}")
+def search_menu(ui_type: str, message: str = "Bir şey yazın:") -> str:
+    clear_screen()
+    result = inquirer.text(
+        message=message,
+        validate=not_empty_validator
+    ).execute()
+    return result
