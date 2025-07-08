@@ -3,9 +3,10 @@ from urllib.parse import urlparse, parse_qs
 import os
 import sys
 
+
 class animecix:
     def __init__(self):
-        self.base_url = "https://anm.cx/"
+        self.base_url = "https://animecix.tv/"
         self.video_players = ["tau-video.xyz", "sibnet"]
         self.headers = {
             'Accept': 'application/json',
@@ -38,7 +39,8 @@ class animecix:
         return []
 
     def fetch_anime_seasons(self, selected_id):
-        url = f"https://mangacix.net/secure/related-videos?episode=1&season=1&titleId={selected_id}&videoId=637113"
+        url = f"https://mangacix.net/secure/related-videos?episode=1&season=1&titleId={
+            selected_id}&videoId=637113"
         json_data = self._get_json(url)
         if json_data and "videos" in json_data:
             videos = json_data["videos"]
@@ -53,14 +55,16 @@ class animecix:
         episodes = []
         seen_episode_names = set()
         for season_index in seasons:
-            url = f"https://mangacix.net/secure/related-videos?episode=1&season={season_index + 1}&titleId={selected_id}&videoId=637113"
+            url = f"https://mangacix.net/secure/related-videos?episode=1&season={
+                season_index + 1}&titleId={selected_id}&videoId=637113"
             data = self._get_json(url)
             if data and 'videos' in data:
                 for item in data['videos']:
                     name = item.get('name', "No name field")
                     if name not in seen_episode_names:
                         episode_url = item.get('url', 'No url field')
-                        season_num = item.get('season_num', "No season num field")
+                        season_num = item.get(
+                            'season_num', "No season num field")
                         episodes.append(
                             {'name': name, 'url': episode_url, 'season_num': season_num})
                         seen_episode_names.add(name)
@@ -69,14 +73,16 @@ class animecix:
     def fetch_anime_watch_api_url(self, url):
         wtch_url = f"{self.base_url}{url}"
         try:
-            response = requests.get(wtch_url, headers=self.headers, allow_redirects=True, timeout=10)
+            response = requests.get(
+                wtch_url, headers=self.headers, allow_redirects=True, timeout=10)
             response.raise_for_status()
             final_resp = response.url
             path = urlparse(final_resp).path
             embed_id = path.split('/')[2]
             query = urlparse(final_resp).query
             vid = parse_qs(query).get('vid', [None])[0]
-            api_url = f"https://{self.video_players[0]}/api/video/{embed_id}?vid={vid}"
+            api_url = f"https://{self.video_players[0]
+                                 }/api/video/{embed_id}?vid={vid}"
             wtch_resp = requests.get(api_url, timeout=10)
             wtch_resp.raise_for_status()
             return [{'label': item.get('label', 'No Label field'), 'url': item.get('url', 'No URL field')} for item in wtch_resp.json().get('urls', [])]
@@ -84,7 +90,8 @@ class animecix:
             return []
 
     def fetch_tr_caption_url(self, selected_season_index, selected_episode_index, selected_id):
-        url = f"https://mangacix.net/secure/related-videos?episode=1&season={selected_season_index + 1}&titleId={selected_id}&videoId=637113"
+        url = f"https://mangacix.net/secure/related-videos?episode=1&season={
+            selected_season_index + 1}&titleId={selected_id}&videoId=637113"
         json_data = self._get_json(url)
         if not json_data or "videos" not in json_data:
             return None
@@ -125,7 +132,8 @@ class animecix:
                     query = urlparse(final_url).query
                     vid = parse_qs(query).get('vid', [None])[0]
 
-                    api_url = f"https://{self.video_players[0]}/api/video/{embed_id}?vid={vid}"
+                    api_url = f"https://{self.video_players[0]
+                                         }/api/video/{embed_id}?vid={vid}"
                     wtch_resp = requests.get(api_url, timeout=10)
                     wtch_resp.raise_for_status()
                     urls = wtch_resp.json().get('urls', [])
@@ -219,7 +227,8 @@ class openanime:
         return sorted(all_episodes, key=lambda ep: (ep["season"], ep["episode"]))
 
     def get_stream_url(self, slug, episode_number, season_number):
-        url = f"{self.base_url}/anime/{slug}/season/{season_number}/episode/{episode_number}"
+        url = f"{
+            self.base_url}/anime/{slug}/season/{season_number}/episode/{episode_number}"
         data = self.get_json(url)
         if data and "episodeData" in data:
             result = []
