@@ -88,7 +88,7 @@ Açıklamalar:
 Bu proje, [xeyossr/anitr-cli](https://github.com/xeyossr/anitr-cli) projesinin bir forkudur.  
 Orijinal proje yalnızca Linux ortamını hedefliyordu. Bu fork, Windows desteği eklemek amacıyla başlatılmıştır.
 
-Kurucu ve geliştirici: [@xeyossr](https://github.com/xeyossr)
+Kurucu ve geliştirici: [@xeyossr](https://github.com/xeyossr)  
 Projeye katkıda bulunan herkes için katkı geçmişine göz atabilirsiniz: [Commits](https://github.com/mstsecurity/anitr-cli-windows/commits)
 
 Fork, orijinal projeyle paralel güncellemeleri izler ve gerekli durumlarda özelleştirmeler içerir.
