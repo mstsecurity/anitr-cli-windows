@@ -8,33 +8,53 @@
   <img src="assets/discord_rpc_preview.png"/>
 </p>
 
-**anitr-cli:** Hızlı bir şekilde anime araması yapabileceğiniz ve istediğiniz animeyi Türkçe altyazılı izleyebileceğiniz terminal aracıdır 💫 Anime severler için hafif, pratik ve kullanışlı bir çözüm sunar 🚀
+**anitr-cli (Windows Fork):** Bu proje, orijinal [anitr-cli](https://github.com/xeyossr/anitr-cli) terminal tabanlı anime izleme aracının Windows uyumlu hale getirilmiş sürümüdür.  
+Orijinal sürüm yalnızca Linux sistemler için optimize edilmişti. Bu fork, Windows kullanıcılarının da aynı deneyimi yaşamasını sağlamak amacıyla oluşturulmuştur.
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/xeyossr/anitr-cli?style=for-the-badge)
-![AUR](https://img.shields.io/aur/version/anitr-cli?style=for-the-badge)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/mstsecurity/anitr-cli-windows?style=for-the-badge)
 
-## 💻 Kurulum
+---
 
-Eğer Arch tabanlı bir dağıtım kullanıyorsanız, [AUR](https://aur.archlinux.org/packages/anitr-cli) üzerinden tek bir komut ile indirebilirsiniz:
+## 💻 Kurulum (Windows)
+
+### 1. MPV Gereksinimi
+
+`anitr-cli` uygulaması MPV medya oynatıcıya bağımlıdır. Sistemde MPV yüklü değilse uygulama çalışmaz.
+
+#### MPV Nasıl Kurulur?
+
+1. [https://mpv.io/installation/](https://mpv.io/installation/) sayfasına gidin.
+2. "Windows" başlığı altındaki "Installer" bağlantısından `.exe` dosyasını indirin.
+3. Kurulum sırasında MPV'nin sistem `PATH` değişkenine eklenmesine dikkat edin. Aksi takdirde uygulama MPV'yi bulamaz.
+
+> [!WARNING]
+> PATH'e ekleme yapılmadıysa uygulama çalışmaz ve bir hata mesajı verir.
+
+---
+
+### 2. anitr-cli'yi İndirme ve Çalıştırma
+
+1. [Releases](https://github.com/mstsecurity/anitr-cli-windows/releases) sayfasından en son `anitr-cli.exe` dosyasını indirin.
+2. Dosyayı aşağıdaki dizine manuel olarak kopyalayın:
 
 ```bash
-yay -S anitr-cli
+%LOCALAPPDATA%\Programs\anitr-cli\
 ```
 
-Eğer Arch tabanlı olmayan bir dağıtım kullanıyorsanız projeyi [releases](https://github.com/xeyossr/anitr-cli/releases) sayfasından kurabilirsiniz.
+> Bu klasör yoksa elle oluşturabilirsiniz.
+
+3. `anitr-cli.exe` çalıştırılabilir hale geldikten sonra, terminal (CMD) üzerinden aşağıdaki komutu kullanarak erişebilirsiniz:
 
 ```bash
-curl -L -o /tmp/anitr-cli https://github.com/xeyossr/anitr-cli/releases/latest/download/anitr-cli
-chmod +x /tmp/anitr-cli
-sudo mv /tmp/anitr-cli /usr/bin/anitr-cli
+anitr-cli
 ```
 
-[Releases](https://github.com/xeyossr/anitr-cli/releases) sayfasından anitr-cli'yi indirdikten sonra, her çalıştırdığınızda yeni bir güncelleme olup olmadığı denetlenecektir. Eğer güncelleme mevcutsa, `anitr-cli --update` komutuyla güncelleyebilirsiniz. Ancak anitr-cli'yi [AUR](https://aur.archlinux.org/packages/anitr-cli) üzerinden kurduysanız, güncelleme için `yay -Sy anitr-cli` komutunu kullanmanız önerilir.
+> Eğer `PATH` değişkenine yukarıdaki klasör eklenmemişse, tam yolu vermeniz gerekebilir.
 
 ## 👾 Kullanım
 
-```bash
-usage: anitr-cli.py [-h] [--source {AnimeciX,OpenAnime}] [--disable-rpc] [--rofi | --tui] [--update]
+```
+usage: anitr-cli.exe [-h] [--source {AnimeciX,OpenAnime}] [--disable-rpc] [--tui] [--update]
 
 💫 Terminalden anime izlemek için CLI aracı.
 
@@ -43,38 +63,43 @@ options:
   --source {AnimeciX,OpenAnime}
                         Hangi kaynak ile anime izlemek istediğinizi belirtir. (default: None)
   --disable-rpc         Discord Rich Presence özelliğini devre dışı bırakır. (default: False)
-  --rofi                Uygulamanın arayüzünü rofi ile açar. (default: False)
   --tui                 Terminalde TUI arayüzü ile açar. (default: False)
   --update              anitr-cli aracını en son sürüme günceller. (default: False)
 ```
 
-## Yapılandırma
+### Yapılandırma
 
-`anitr-cli`'nin yapılandırma dosyası şurada bulunur: `~/.config/anitr-cli/config`
-Aşağıdaki ortam değişkenleri ile uygulamanın davranışını özelleştirebilirsiniz:
+Yapılandırma dosyası şurada bulunur:
+`C:\Users\<kullanıcı_adı>\.anitr-cli\config`
+
+Örnek yapılandırma:
 
 ```ini
-rofi_flags=-i -width 50
-rofi_theme=/path/to/theme.rasi
-default_ui=rofi
 discord_rpc=Enabled
 save_position_on_quit=True
 ```
 
-`ROFI_FLAGS` — Rofi modunda çalıştırırken ek parametreler eklemek için kullanılır.  
-`ROFI_THEME` — Rofi arayüzü için özel bir tema belirtmek için kullanılır.  
-`DEFAULT_UI` — Uygulamanın varsayılan arayüzünü belirler. `rofi` veya `tui` olarak ayarlanabilir.  
-`DISCORD_RPC` - Discord Rich Presence özelliğini aktifleştirir/devre dışı bırakır.  
-`SAVE_POSITION_ON_QUIT` - Bir bölümü yarıda bıraksanız bile, MPV kaldığınız saniyeyi hatırlar ve bir sonraki açışınızda tam oradan başlatır.
+Açıklamalar:
+
+- `discord_rpc` — Discord Rich Presence özelliğini etkinleştirir/devre dışı bırakır.
+- `save_position_on_quit` — MPV üzerinden izlemeyi bıraktığınız saniyeyi hatırlayıp tekrar başlattığınızda aynı yerden devam eder.
+
+## Hakkında (Bu Fork Ne İçin?)
+
+Bu proje, [xeyossr/anitr-cli](https://github.com/xeyossr/anitr-cli) projesinden çatallanmıştır.  
+Linux sistemlere özel geliştirilmişti ve Windows ortamında çalışmıyordu.  
+Bu fork, orijinal koda sadık kalarak Windows uyumlu hale getirilmiştir.
+
+---
 
 ## Sorunlar
 
-Eğer bir sorunla karşılaştıysanız ve aşağıdaki çözümler işe yaramıyorsa, lütfen bir [**issue**](https://github.com/xeyossr/anitr-cli/issue) açarak karşılaştığınız problemi detaylı bir şekilde açıklayın.
+Bir sorunla karşılaşırsanız lütfen [issue](https://github.com/mstsecurity/anitr-cli-windows/issues) sayfasına bildirin.  
+Windows’a özel karşılaşılan sorunlar bu projeye, genel sorunlar ise ana projeye bildirilmelidir.
 
-## Katkı
-
-Pull request göndermeden önce lütfen [CONTRIBUTING.md](CONTRIBUTING.md) dosyasını dikkatlice okuduğunuzdan emin olun. Bu dosya, projeye katkıda bulunurken takip etmeniz gereken kuralları ve yönergeleri içermektedir.
+---
 
 ## Lisans
 
-Bu proje GNU General Public License v3.0 (GPL-3) altında lisanslanmıştır. Yazılımı bu lisansın koşulları altında kullanmakta, değiştirmekte ve dağıtmakta özgürsünüz. Daha fazla ayrıntı için lütfen [LICENSE](LICENSE) dosyasına bakın.
+Bu proje, orijinal proje gibi GNU General Public License v3.0 (GPL-3) lisansı altındadır.  
+Daha fazla bilgi için [LICENSE](LICENSE) dosyasını inceleyebilirsiniz.
