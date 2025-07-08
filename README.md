@@ -1,18 +1,15 @@
-<!--div align="center">
+<div align="center">
   <h1>Önizleme</h1>
-</div>
 
-[preview.mp4](https://github.com/user-attachments/assets/199d940e-14c6-468c-9120-496185ab2217)
+| ![animecix](.github/discord_rpc1.png) | ![openanime](.github/discord_rpc2.png) |
+| ------------------------------------- | -------------------------------------- |
 
-<p>
-  <img src="assets/discord_rpc_preview.png"/>
-</p>
--->
-
-**anitr-cli (Windows Fork):** Bu proje, orijinal [anitr-cli](https://github.com/xeyossr/anitr-cli) terminal tabanlı anime izleme aracının Windows uyumlu hale getirilmiş sürümüdür.  
+**anitr-cli-windows:** Bu proje, orijinal [anitr-cli](https://github.com/xeyossr/anitr-cli) terminal tabanlı anime izleme aracının Windows uyumlu hale getirilmiş sürümüdür.  
 Orijinal sürüm yalnızca Linux sistemler için optimize edilmişti. Bu fork, Windows kullanıcılarının da aynı deneyimi yaşamasını sağlamak amacıyla oluşturulmuştur.
 
 ## ![GitHub release (latest by date)](https://img.shields.io/github/v/release/mstsecurity/anitr-cli-windows?style=for-the-badge&display_name=release&include_prereleases)
+
+</div>
 
 ## 💻 Kurulum (Windows)
 
@@ -20,11 +17,15 @@ Orijinal sürüm yalnızca Linux sistemler için optimize edilmişti. Bu fork, W
 
 `anitr-cli` uygulaması MPV medya oynatıcıya bağımlıdır. Sistemde MPV yüklü değilse uygulama çalışmaz.
 
-#### MPV Nasıl Kurulur?
+#### [Scoop](https://adamtheautomator.com/scoop-windows/) ile kurulum
 
-1. [https://mpv.io/installation/](https://mpv.io/installation/) sayfasına gidin.
-2. "Windows" başlığı altındaki "Installer" bağlantısından `.exe` dosyasını indirin.
-3. Kurulum sırasında MPV'nin sistem `PATH` değişkenine eklenmesine dikkat edin. Aksi takdirde uygulama MPV'yi bulamaz.
+```bash
+scoop install mpv
+```
+
+#### Manuel kurulum
+
+![MPV](https://github.com/shinchiro/mpv-winbuild-cmake/releases) sayfasından .exe indirip PATH'e ekleyin.
 
 > [!WARNING]
 > PATH'e ekleme yapılmadıysa uygulama çalışmaz ve bir hata mesajı verir.
@@ -33,27 +34,30 @@ Orijinal sürüm yalnızca Linux sistemler için optimize edilmişti. Bu fork, W
 
 ### 2. anitr-cli'yi İndirme ve Çalıştırma
 
-1. [Releases](https://github.com/mstsecurity/anitr-cli-windows/releases) sayfasından en son `anitr-cli.exe` dosyasını indirin.
-2. Dosyayı aşağıdaki dizine manuel olarak kopyalayın:
+1. [Releases](https://github.com/mstsecurity/anitr-cli-windows/releases) sayfasından en son .zip dosyasını indirin ve arşivden çıkarın
+2. Klasörü aşağıdaki dizine kopyalayın
 
 ```bash
-%LOCALAPPDATA%\Programs\anitr-cli\
+%LOCALAPPDATA%\Programs\
 ```
 
-> Bu klasör yoksa elle oluşturabilirsiniz.
-
-3. `anitr-cli.exe` çalıştırılabilir hale geldikten sonra, terminal (CMD) üzerinden aşağıdaki komutu kullanarak erişebilirsiniz:
+3. Python bağımlılıklarını kurun:
 
 ```bash
-anitr-cli
+pip install -r requirements.txt
 ```
 
-> Eğer `PATH` değişkenine yukarıdaki klasör eklenmemişse, tam yolu vermeniz gerekebilir.
+4. .bat dosyasını kopyalayın:
+   `anitr-cli.bat` dosyasını `%LOCALAPPDATA%\Programs\bin\` içerisine kopyalayın (yoksa klasörü oluşturun), ardından:
+
+```bash
+setx PATH "%PATH%;%LOCALAPPDATA%\Programs\bin"
+```
 
 ## 👾 Kullanım
 
 ```
-usage: anitr-cli.exe [-h] [--source {AnimeciX,OpenAnime}] [--disable-rpc] [--tui] [--update]
+usage: anitr-cli [-h] [--source {AnimeciX,OpenAnime}] [--disable-rpc] [--update]
 
 💫 Terminalden anime izlemek için CLI aracı.
 
