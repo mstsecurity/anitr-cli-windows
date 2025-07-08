@@ -39,4 +39,4 @@ github_repo = "https://github.com/mstsecurity/anitr-cli-windows"
 
 GITHUB_REPO = "mstsecurity/anitr-cli-windows"
 
-CURRENT_VERSION = "3.6.0"
+CURRENT_VERSION = "3.6.0-2"
