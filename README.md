@@ -1,19 +1,19 @@
-<div align="center">
+<!--div align="center">
   <h1>Önizleme</h1>
 </div>
 
 [preview.mp4](https://github.com/user-attachments/assets/199d940e-14c6-468c-9120-496185ab2217)
 
+
 <p>
   <img src="assets/discord_rpc_preview.png"/>
 </p>
+-->
 
 **anitr-cli (Windows Fork):** Bu proje, orijinal [anitr-cli](https://github.com/xeyossr/anitr-cli) terminal tabanlı anime izleme aracının Windows uyumlu hale getirilmiş sürümüdür.  
 Orijinal sürüm yalnızca Linux sistemler için optimize edilmişti. Bu fork, Windows kullanıcılarının da aynı deneyimi yaşamasını sağlamak amacıyla oluşturulmuştur.
 
-![GitHub release (latest by date)](https://img.shields.io/github/v/release/mstsecurity/anitr-cli-windows?style=for-the-badge)
-
----
+## ![GitHub release (latest by date)](https://img.shields.io/github/v/release/mstsecurity/anitr-cli-windows?style=for-the-badge&display_name=release&include_prereleases)
 
 ## 💻 Kurulum (Windows)
 
