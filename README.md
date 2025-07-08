@@ -63,7 +63,6 @@ options:
   --source {AnimeciX,OpenAnime}
                         Hangi kaynak ile anime izlemek istediğinizi belirtir. (default: None)
   --disable-rpc         Discord Rich Presence özelliğini devre dışı bırakır. (default: False)
-  --tui                 Terminalde TUI arayüzü ile açar. (default: False)
   --update              anitr-cli aracını en son sürüme günceller. (default: False)
 ```
 
@@ -84,11 +83,15 @@ Açıklamalar:
 - `discord_rpc` — Discord Rich Presence özelliğini etkinleştirir/devre dışı bırakır.
 - `save_position_on_quit` — MPV üzerinden izlemeyi bıraktığınız saniyeyi hatırlayıp tekrar başlattığınızda aynı yerden devam eder.
 
-## Hakkında (Bu Fork Ne İçin?)
+## Bu Fork Hakkında
 
-Bu proje, [xeyossr/anitr-cli](https://github.com/xeyossr/anitr-cli) projesinden çatallanmıştır.  
-Linux sistemlere özel geliştirilmişti ve Windows ortamında çalışmıyordu.  
-Bu fork, orijinal koda sadık kalarak Windows uyumlu hale getirilmiştir.
+Bu proje, [xeyossr/anitr-cli](https://github.com/xeyossr/anitr-cli) projesinin bir forkudur.  
+Orijinal proje yalnızca Linux ortamını hedefliyordu. Bu fork, Windows desteği eklemek amacıyla başlatılmıştır.
+
+Kurucu ve geliştirici: [@xeyossr](https://github.com/xeyossr)
+Projeye katkıda bulunan herkes için katkı geçmişine göz atabilirsiniz: [Commits](https://github.com/mstsecurity/anitr-cli-windows/commits)
+
+Fork, orijinal projeyle paralel güncellemeleri izler ve gerekli durumlarda özelleştirmeler içerir.
 
 ---
 
