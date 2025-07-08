@@ -93,7 +93,7 @@ def save_image_from_url(url, selected_anime_name):
 
 def AnimeciX():
     query = ui.search_menu(
-        config.default_ui, "Anime ara ama 31 çekmek için değil bizede günah geçer >")
+        config.default_ui, "Anime ara >")
 
     if not query or query == "Çık":
         return
