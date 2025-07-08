@@ -21,56 +21,38 @@ def get_latest_version():
 
 def download_and_replace_binary():
     print("📦 Güncelleme başlatılıyor...")
-    
-    app_dir = os.path.dirname(os.path.abspath(sys.argv[0]))
-    
-    if shutil.which("git") is None:
-        utils.show_notification("anitr-cli", "Git kurulu değil. Lütfen Git'i kurduğunuzdan emin olun.", "critical")
-        print("\033[91mHata: Git kurulu değil. Lütfen Git'i kurun ve PATH'inize ekleyin.\033[0m")
-        return
+
+    install_dir = os.path.join(os.getenv("LOCALAPPDATA"), "Programs", "anitr-cli")
+    os.makedirs(install_dir, exist_ok=True)
+    exe_path = os.path.join(install_dir, "anitr-cli.exe")
+
+    latest = get_latest_version()
+    download_url = f"https://github.com/{config.GITHUB_REPO}/releases/download/v{latest}/anitr-cli.exe"
 
     try:
-        os.chdir(app_dir)
-        print(f"Güncelleme için dizin: {os.getcwd()}")
+        print(f"{download_url} adresinden indiriliyor...")
+        response = requests.get(download_url, timeout=15)
+        response.raise_for_status()
 
-        print("Git pull çekiliyor...")
-        pull_result = subprocess.run(["git", "pull"], capture_output=True, text=True, check=True)
-        print(pull_result.stdout)
-        if pull_result.stderr:
-            print(f"\033[93mGit uyarısı: {pull_result.stderr}\033[0m")
+        with open(exe_path, "wb") as f:
+            f.write(response.content)
 
-        if "Already up to date" not in pull_result.stdout and "Fast-forward" in pull_result.stdout:
-            print("Uygulama güncellendi. Bağımlılıklar kontrol ediliyor...")
-            if os.path.exists("requirements.txt"):
-                try:
-                    pip_install_cmd = [sys.executable, "-m", "pip", "install", "-r", "requirements.txt"]
-                    print(f"Bağımlılıklar güncelleniyor: {' '.join(pip_install_cmd)}")
-                    pip_result = subprocess.run(pip_install_cmd, capture_output=True, text=True, check=True)
-                    print(pip_result.stdout)
-                    if pip_result.stderr:
-                        print(f"\033[93mPip uyarısı: {pip_result.stderr}\033[0m")
-                    print("Bağımlılıklar güncellendi.")
-                except subprocess.CalledProcessError as e:
-                    utils.log_error(config.error_log, f"Bağımlılıklar güncellenirken hata: {e.stderr}")
-                    utils.show_notification("anitr-cli", "Bağımlılıklar güncellenirken hata oluştu.", "critical")
-                    print(f"\033[91mHata: Bağımlılıklar güncellenirken hata oluştu: {e.stderr}\033[0m")
-            else:
-                print("requirements.txt bulunamadı, bağımlılıklar güncellenmedi.")
-            
-            utils.show_notification("anitr-cli", "Uygulama başarıyla güncellendi!", "normal")
-            print("\033[32mUygulama başarıyla güncellendi! Lütfen uygulamayı yeniden başlatın.\033[0m")
+        print(f"\033[32mYeni sürüm {exe_path} konumuna yüklendi.\033[0m")
+
+        # PATH içinde mi kontrolü
+        path_env = os.environ.get("PATH", "")
+        if install_dir.lower() not in [p.strip().lower() for p in path_env.split(";")]:
+            print(f"\033[93mUyarı: {install_dir} dizini PATH ortam değişkeninde bulunmuyor.\033[0m")
+            print("anitr-cli komutunu doğrudan kullanmak için bu dizini PATH'e ekleyin.")
+            utils.show_notification("anitr-cli", "Yükleme başarılı ancak PATH'e ekli değil.", "normal")
         else:
-            print("Uygulama zaten en güncel sürümde.")
-            utils.show_notification("anitr-cli", "Uygulama zaten en güncel sürümde.", "normal")
+            print("\033[32manitr-cli komutu artık doğrudan kullanılabilir.\033[0m")
+            utils.show_notification("anitr-cli", "Güncelleme tamamlandı.", "normal")
 
-    except subprocess.CalledProcessError as e:
-        utils.log_error(config.error_log, f"Güncelleme hatası: {e.stderr}")
-        utils.show_notification("anitr-cli", f"Güncelleme başarısız oldu: {e.stderr.strip()}", "critical")
-        print(f"\033[91mGüncelleme hatası: {e.stderr}\033[0m")
-    except Exception as e:
-        utils.log_error(config.error_log, f"Beklenmedik güncelleme hatası: {e}")
-        utils.show_notification("anitr-cli", f"Beklenmedik güncelleme hatası: {e}", "critical")
-        print(f"\033[91mBeklenmedik bir hata oluştu: {e}\033[0m")
+    except requests.exceptions.RequestException as e:
+        print(f"\033[91mİndirme hatası: {e}\033[0m")
+        utils.log_error(config.error_log, f"Güncelleme indirilemedi: {e}")
+        utils.show_notification("anitr-cli", "Güncelleme indirilemedi.", "critical")
 
 def check_update_notice():
     try:

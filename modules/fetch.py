@@ -3,7 +3,6 @@ from urllib.parse import urlparse, parse_qs
 import os
 import sys
 
-
 class animecix:
     def __init__(self):
         self.base_url = "https://anm.cx/"

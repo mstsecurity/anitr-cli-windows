@@ -25,7 +25,7 @@ def select_menu(ui_type: str, choices: list, message: str = "Bir seçenek seçin
         
     question = [
         {
-            "type": Type, # BURADAKİ 'Type' parametresi string olmalı
+            "type": Type,
             "name": "selection",
             "message": message,
             "choices": choices,

@@ -35,8 +35,8 @@ anime_details = os.path.join(_temp_dir, "anime_details.json")
 error_log = os.path.join(_temp_dir, "anitr-cli-error.log")
 config_path = _config_file_path
 
-github_repo = "https://github.com/xeyossr/anitr-cli"
+github_repo = "https://github.com/mstsecurity/anitr-cli-windows"
 
-GITHUB_REPO = "xeyossr/anitr-cli"
+GITHUB_REPO = "mstsecurity/anitr-cli-windows"
 
 CURRENT_VERSION = "3.6.0"

@@ -41,5 +41,4 @@ def smart_print(text: str, notification_msg: str, notification: bool = True, ico
     print(text)
 
 def get_source(ui_module):
-    # BURASI DÜZELTİLDİ: False yerine Type="list" kullanıldı
-    return ui_module.select_menu("tui", config.sources, "Kaynak seç:", Type="list")
+    return ui_module.select_menu("tui", config.sources, "Kaynak seç:")
