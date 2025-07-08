@@ -4,7 +4,6 @@
 
 [preview.mp4](https://github.com/user-attachments/assets/199d940e-14c6-468c-9120-496185ab2217)
 
-
 <p>
   <img src="assets/discord_rpc_preview.png"/>
 </p>
