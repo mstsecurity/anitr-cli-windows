@@ -1,6 +1,6 @@
 .venv
 .vscode
 modules/__pycache__
-anitr-cli.spec
+anitr-cli.windows.spec
 build
 dist

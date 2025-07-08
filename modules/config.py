@@ -16,9 +16,9 @@ discord_rpc = utils.get_env("discord_rpc", "DISCORD_RPC", default="enabled")
 save_position_on_quit = utils.get_bool_env(
     "save_position_on_quit", "SAVE_POSITION_ON_QUIT", default="false")
 
-default_ui = "tui" 
+default_ui = "tui"
 
-sources = ["AnimeciX (anm.cx)", "OpenAnime (openani.me)"]
+sources = ["AnimeciX (animecix.tv)", "OpenAnime (openani.me)"]
 
 discord_client_id = "1383421771159572600"
 rpc = None
