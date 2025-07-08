@@ -92,21 +92,26 @@ def save_image_from_url(url, selected_anime_name):
 
 
 def AnimeciX():
-    query = ui.search_menu(config.default_ui, "Anime ara ama 31 çekmek için değil bizede günah geçer >")
+    query = ui.search_menu(
+        config.default_ui, "Anime ara ama 31 çekmek için değil bizede günah geçer >")
 
     if not query or query == "Çık":
         return
 
     search_data = animecix().fetch_anime_search_data(query)
 
-    # YENİ EKLENEN KONTROL: Eğer arama sonucu boşsa
     if not search_data:
-        ui.show_error(config.default_ui, "kral bulamadık ya kusura bakma tekrar ara")
+        ui.show_error(config.default_ui, "Arama sonucu bulunamadı.")
         return
 
     anime_data = [{"name": item["name"], "id": item["id"], "title_type": item.get(
         "title_type", ""), "type": item.get("type", ""), "poster": item.get("poster", "")} for item in search_data]
     anime_names = [f'{item["name"]} (ID: {item["id"]})' for item in anime_data]
+    anime_types = [
+        "movie" if (item["title_type"] and item["title_type"].lower() == "movie") or
+        (item["type"] and item["type"].lower() == "movie") else "tv"
+        for item in anime_data
+    ]
 
     selected_anime_name = ui.select_menu(
         config.default_ui, anime_names, "Anime seç:", Type="fuzzy")
@@ -143,7 +148,8 @@ def AnimeciX():
         else:
             anime_episodes_data_local = animecix().fetch_anime_episodes(selected_id)
             if not anime_episodes_data_local:
-                utils.show_notification("anitr-cli", "Bölüm verisi alınamadı.", "critical")
+                utils.show_notification(
+                    "anitr-cli", "Bölüm verisi alınamadı.", "critical")
                 return [], [], [], None
 
             data = animecix().fetch_anime_watch_api_url(
@@ -168,7 +174,8 @@ def AnimeciX():
     if not is_movie:
         anime_episodes_data = animecix().fetch_anime_episodes(selected_anime_id)
         if not anime_episodes_data:
-            ui.show_error(config.default_ui, "Bu animeye ait bölüm bulunamadı.")
+            ui.show_error(config.default_ui,
+                          "Bu animeye ait bölüm bulunamadı.")
             return
         anime_episode_names = [item['name'] for item in anime_episodes_data]
         selected_episode_index = 0
@@ -230,7 +237,7 @@ def AnimeciX():
 
             if not watch_api_labels:
                 ui.show_error(config.default_ui,
-                               "Çözünürlük verisi alınamadı. Lütfen başka bir bölüm veya anime deneyin.")
+                              "Çözünürlük verisi alınamadı. Lütfen başka bir bölüm veya anime deneyin.")
                 continue
 
             if selected_resolution is None:
@@ -246,7 +253,7 @@ def AnimeciX():
                 selected_resolution_index -= 1
                 if selected_resolution_index < 0:
                     ui.show_error(config.default_ui,
-                                   "Geçerli bir video URL'si bulunamadı.")
+                                  "Geçerli bir video URL'si bulunamadı.")
                     break
             if selected_resolution_index < 0:
                 continue
@@ -280,7 +287,7 @@ def AnimeciX():
         elif selected_option == "Sonraki bölüm":
             if is_movie:
                 ui.show_error(config.default_ui,
-                               "Film izliyorsunuz, sonraki bölüm yok.")
+                              "Film izliyorsunuz, sonraki bölüm yok.")
                 continue
             if selected_episode_index + 1 >= len(anime_episodes_data):
                 ui.show_error(config.default_ui, "Zaten son bölümdesiniz.")
@@ -306,7 +313,7 @@ def AnimeciX():
         elif selected_option == "Önceki bölüm":
             if is_movie:
                 ui.show_error(config.default_ui,
-                               "Film izliyorsunuz, önceki bölüm yok.")
+                              "Film izliyorsunuz, önceki bölüm yok.")
                 continue
             if selected_episode_index == 0:
                 ui.show_error(config.default_ui, "Zaten ilk bölümdesiniz.")
@@ -332,7 +339,7 @@ def AnimeciX():
         elif selected_option == "Bölüm seç":
             if is_movie:
                 ui.show_error(config.default_ui,
-                               "Film izliyorsunuz, bölüm seçme yok.")
+                              "Film izliyorsunuz, bölüm seçme yok.")
                 continue
             selected_episode_name_from_menu = ui.select_menu(
                 config.default_ui, anime_episode_names, "Bölüm seç:", Type="fuzzy")
@@ -363,7 +370,7 @@ def AnimeciX():
 
             if not watch_api_labels:
                 ui.show_error(config.default_ui,
-                               "Çözünürlük verisi alınamadı.")
+                              "Çözünürlük verisi alınamadı.")
                 continue
 
             selected_resolution = ui.select_menu(
@@ -514,7 +521,7 @@ def OpenAnime():
 
             if not watch_api_labels:
                 ui.show_error(config.default_ui,
-                               "Çözünürlük verisi alınamadı.")
+                              "Çözünürlük verisi alınamadı.")
                 continue
 
             if selected_resolution is None:
@@ -528,7 +535,7 @@ def OpenAnime():
                 selected_resolution_index -= 1
                 if selected_resolution_index < 0:
                     ui.show_error(config.default_ui,
-                                   "Geçerli bir video URL'si bulunamadı.")
+                                  "Geçerli bir video URL'si bulunamadı.")
                     break
             if selected_resolution_index < 0:
                 continue
@@ -552,7 +559,7 @@ def OpenAnime():
         elif selected_option == "Sonraki bölüm":
             if is_movie:
                 ui.show_error(config.default_ui,
-                               "Film izliyorsunuz, sonraki bölüm yok.")
+                              "Film izliyorsunuz, sonraki bölüm yok.")
                 continue
             if selected_episode_index + 1 >= len(anime_episodes_data):
                 ui.show_error(config.default_ui, "Zaten son bölümdesiniz.")
@@ -577,7 +584,7 @@ def OpenAnime():
         elif selected_option == "Önceki bölüm":
             if is_movie:
                 ui.show_error(config.default_ui,
-                               "Film izliyorsunuz, önceki bölüm yok.")
+                              "Film izliyorsunuz, önceki bölüm yok.")
                 continue
             if selected_episode_index == 0:
                 ui.show_error(config.default_ui, "Zaten ilk bölümdesiniz.")
@@ -602,7 +609,7 @@ def OpenAnime():
         elif selected_option == "Bölüm seç":
             if is_movie:
                 ui.show_error(config.default_ui,
-                               "Film izliyorsunuz, bölüm seçme yok.")
+                              "Film izliyorsunuz, bölüm seçme yok.")
                 continue
             selected_episode_name_from_menu = ui.select_menu(
                 config.default_ui, anime_episode_names, "Bölüm seç:", Type="fuzzy")
@@ -633,7 +640,7 @@ def OpenAnime():
 
             if not watch_api_labels:
                 ui.show_error(config.default_ui,
-                               "Çözünürlük verisi alınamadı.")
+                              "Çözünürlük verisi alınamadı.")
                 continue
 
             selected_resolution = ui.select_menu(
@@ -676,7 +683,7 @@ def main():
         latest = update.get_latest_version()
         if version.parse(latest) > version.parse(config.CURRENT_VERSION):
             print(f"Yeni sürüm bulundu: \033[31mv{
-                    config.CURRENT_VERSION}\033[0m → \033[32mv{latest}\033[0m")
+                config.CURRENT_VERSION}\033[0m → \033[32mv{latest}\033[0m")
             update.download_and_replace_binary()
         else:
             print("Zaten en güncel sürümdesiniz.")
